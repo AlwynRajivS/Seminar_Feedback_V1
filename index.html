@@ -292,16 +292,13 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
   @page{size:A4;margin:8mm 10mm}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 
-  /* ── Hide all screen-only UI ── */
   .rp-header,.no-print,.rp-footer{display:none!important}
   #loginPage{display:none!important}
   #reportPage{display:block!important;min-height:0!important}
   .rp-body{padding:0!important;max-width:100%!important;margin:0!important}
 
-  /* ── Base font tighter for print ── */
   body{background:#fff!important;font-family:'Sora',sans-serif;font-size:7.8pt;color:#0f172a}
 
-  /* ── PDF cover visible in print ── */
   #pdf-cover{display:flex!important}
   #pdf-cover{padding:5px 0 8px!important;margin-bottom:7px!important}
   #pdf-cover .cv-title{font-size:11pt!important}
@@ -309,7 +306,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
   #pdf-cover .cv-meta{font-size:6.5pt!important;line-height:1.7!important}
   #pdf-cover .cv-logo{width:38px!important;height:38px!important;font-size:17px!important}
 
-  /* ── Student card ── */
   .stu-card{
     border-radius:5px!important;padding:9px 13px!important;
     margin-bottom:7px!important;
@@ -325,12 +321,10 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
   .perf-val{font-size:.95rem!important}
   .fb-level-pill{font-size:6pt!important;padding:2px 8px!important}
 
-  /* ── Section headings ── */
   .sec-head{margin:6px 0 5px!important}
   .sec-head-num{width:20px!important;height:20px!important;font-size:6.5pt!important;border-radius:5px!important}
   .sec-head-txt{font-size:6.8pt!important;letter-spacing:.6px!important}
 
-  /* ── Feedback cards ── */
   .fb-card{
     margin-bottom:5px!important;
     border-radius:4px!important;
@@ -342,7 +336,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
   .fb-head-icon{font-size:.8rem!important}
   .fb-head-name{font-size:7.5pt!important;font-weight:700!important}
 
-  /* ── 2-col grid always in print ── */
   .fb-grid{
     display:grid!important;
     grid-template-columns:1fr 1fr!important;
@@ -351,7 +344,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
   .fb-cell{padding:5px 8px!important;border-right:1px solid #dde3f0!important;border-bottom:1px solid #dde3f0!important}
   .fb-cell:nth-child(2n){border-right:none!important}
   .fb-cell:nth-last-child(-n+2){border-bottom:none!important}
-  /* top accent borders */
   .fb-cell.c-comment{border-top:2px solid #3b82f6!important}
   .fb-cell.c-problem{border-top:2px solid #ef4444!important}
   .fb-cell.c-suggest{border-top:2px solid #10b981!important}
@@ -360,14 +352,12 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
   .fb-cell-tag{font-size:5.8pt!important;margin-bottom:3px!important}
   .fb-cell-text{font-size:6.8pt!important;line-height:1.38!important}
 
-  /* ── PAGE 2: forced new page ── */
   #page2-content{
     display:block!important;
     page-break-before:always;
     margin-top:0!important;
   }
 
-  /* ── Page 2 elements ── */
   .p2-head{border-radius:5px!important;padding:8px 14px!important;margin-bottom:10px!important}
   .p2-head-title{font-size:9pt!important}
   .p2-head-sub{font-size:6.5pt!important}
@@ -598,7 +588,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
 /* ══════════════════════════════════════════════
    CONFIG — paste your Google Apps Script URL
 ══════════════════════════════════════════════ */
-var GAS_URL = "https://script.google.com/macros/s/AKfycbyx7EJzl7xeJ6d9gsJwVH1pXYzhaUYYWrwP7wW0VnBqZcFSIbmsPhheudWVtUwNrgc/exec";
+var GAS_URL = "https://script.google.com/macros/s/AKfycbze44ojtJgtaP4VqEiUc-IjqBFqCy503s_5biobXpIMuSdVmpkAlbXJp1VDoRj8f9xV/exec";
 
 /* ══ PAGE SWITCHING ══════════════════════════ */
 function showPage(id){
@@ -697,20 +687,281 @@ function levelInfo(pct){
 }
 function avgPct(keys,fb){var s=0;keys.forEach(function(k){s+=fb[k].levelPct});return Math.round(s/keys.length)}
 
-/* ══ RENDER EVERYTHING ═══════════════════════ */
+/* ══════════════════════════════════════════════════════
+   CATEGORY-SPECIFIC FEEDBACK GENERATOR
+   Backend sends only marks → frontend converts to text
+   Each category has tailored comment/problem/suggestion/motivation
+══════════════════════════════════════════════════════ */
+var CATEGORY_FEEDBACK = {
+
+  /* ── Problem Statement / Theme ──────────────────────
+     Checks: Can the student correctly identify and
+     articulate the problem statement or theme?         */
+  problem: function(p){
+    if(p>=90) return {
+      comment:    "Identified and articulated the problem statement with exceptional clarity and precision. The theme was well-defined and logically framed.",
+      problem:    "No notable gaps observed. The problem identification was thorough and accurate.",
+      suggestion: "Continue refining your ability to contextualise problem statements with real-world relevance and industry examples.",
+      motivation: "Outstanding problem framing — you clearly understand the 'why' behind your seminar topic. Keep this up!"
+    };
+    if(p>=75) return {
+      comment:    "Demonstrated a solid grasp of the problem statement. The theme was clearly conveyed with minor gaps in depth.",
+      problem:    "The problem statement lacked some contextual justification and could have been framed with stronger supporting rationale.",
+      suggestion: "Work on linking the identified problem to broader real-world scenarios to strengthen your framing.",
+      motivation: "Good foundation — sharpening your problem articulation will take your presentation to the next level!"
+    };
+    if(p>=60) return {
+      comment:    "Showed a reasonable understanding of the problem area, though the statement was not fully precise or well-structured.",
+      problem:    "The problem statement was somewhat vague and did not clearly distinguish the core issue from peripheral aspects.",
+      suggestion: "Practise writing crisp problem statements using structured templates like '5 Whys' or problem-solution framing.",
+      motivation: "You are on the right track — clear problem identification is a learnable skill. Keep practising!"
+    };
+    if(p>=45) return {
+      comment:    "Basic awareness of the topic was present, but the problem statement was poorly defined and lacked specificity.",
+      problem:    "The theme and problem were often conflated. The student struggled to isolate the core issue from the topic at large.",
+      suggestion: "Revisit your topic, identify the specific gap or challenge it addresses, and practise stating it in 2–3 focused sentences.",
+      motivation: "Every strong presentation begins with a clear problem — invest time here and it will transform your entire seminar!"
+    };
+    return {
+      comment:    "The problem statement was unclear or absent. The theme of the seminar was not effectively communicated.",
+      problem:    "Significant difficulty in identifying and expressing the problem statement. The presentation lacked a clear central focus.",
+      suggestion: "Meet your faculty advisor urgently to jointly define the problem statement. Write it down and memorise it before re-presenting.",
+      motivation: "This is your starting point — once you nail the problem statement, everything else in your seminar falls into place!"
+    };
+  },
+
+  /* ── Methodology / Proposed Solution ───────────────
+     Checks: Knowledge depth, technical skill,
+     clarity of methodology / proposed solution        */
+  methodology: function(p){
+    if(p>=90) return {
+      comment:    "Presented the methodology and proposed solution with outstanding technical depth and logical coherence. Strong command of the subject.",
+      problem:    "No significant issues noted. The solution was well-justified and technically sound.",
+      suggestion: "Consider exploring alternative methodologies to strengthen comparative analysis and demonstrate broader technical awareness.",
+      motivation: "Exceptional technical clarity — your methodology showed real mastery of the subject. Truly impressive work!"
+    };
+    if(p>=75) return {
+      comment:    "Good explanation of methodology with a clear proposed solution. Minor technical gaps were observed in justification.",
+      problem:    "Some steps in the methodology lacked detailed reasoning, and the rationale for choosing this approach over alternatives was not stated.",
+      suggestion: "Strengthen your explanation by justifying each methodological step and comparing it with at least one alternative approach.",
+      motivation: "Strong technical foundation — a bit more depth in your reasoning will make your methodology airtight!"
+    };
+    if(p>=60) return {
+      comment:    "Satisfactory coverage of methodology. The proposed solution was understandable but lacked technical precision.",
+      problem:    "The methodology was described superficially. Technical terms were used without adequate explanation or application context.",
+      suggestion: "Study each step of your methodology in depth. Practise explaining it using diagrams, flowcharts, or step-by-step walkthroughs.",
+      motivation: "Your method is there — now dig deeper into the 'how' and 'why' to truly own this section!"
+    };
+    if(p>=45) return {
+      comment:    "Basic understanding of the methodology was evident, but the proposed solution was underdeveloped and lacked technical substance.",
+      problem:    "The methodology was vague and the solution was not convincingly presented. Critical technical aspects were missing or incorrect.",
+      suggestion: "Revisit the core technical concepts of your topic. Rebuild your methodology section with structured steps and clear technical justification.",
+      motivation: "Methodology is the heart of your seminar — commit to understanding every step and you will see a dramatic improvement!"
+    };
+    return {
+      comment:    "The methodology was unclear and the proposed solution was not adequately explained. Technical knowledge appeared insufficient.",
+      problem:    "Fundamental gaps in understanding of the methodology were observed. The proposed solution was either absent or technically incorrect.",
+      suggestion: "Seek immediate guidance from your faculty. Rebuild this section from scratch with a clear, step-by-step technical plan.",
+      motivation: "Every expert was once a beginner — reach out for help now, put in the hours, and you will get there!"
+    };
+  },
+
+  /* ── Pictorial / Scientific Explanation ────────────
+     Checks: Quality of visuals, commitment to
+     presentation preparation and project work         */
+  pictorial: function(p){
+    if(p>=90) return {
+      comment:    "Visuals and scientific explanations were of exceptional quality, clearly reflecting thorough preparation and deep project engagement.",
+      problem:    "No issues observed. Every slide and diagram served a clear communicative purpose.",
+      suggestion: "Experiment with advanced visualisation tools (e.g., infographics, 3D models, simulations) to further elevate your presentation quality.",
+      motivation: "Your visuals tell a story on their own — that is the mark of a truly prepared presenter. Excellent work!"
+    };
+    if(p>=75) return {
+      comment:    "Well-prepared visuals that supported the presentation effectively. Scientific diagrams were accurate and mostly self-explanatory.",
+      problem:    "Some diagrams lacked labels or annotations, reducing their standalone clarity. A few slides were text-heavy.",
+      suggestion: "Label all diagrams clearly, simplify text-heavy slides into visual summaries, and ensure every graphic directly supports your narrative.",
+      motivation: "Great preparation shown — polishing your visuals will make your next presentation even more professional and impactful!"
+    };
+    if(p>=60) return {
+      comment:    "Adequate visuals were included, but some diagrams were unclear or not sufficiently tied to the explanation.",
+      problem:    "Several slides appeared rushed or were borrowed without proper contextualisation. Scientific accuracy of some visuals was questionable.",
+      suggestion: "Create your own diagrams wherever possible. Ensure every visual is directly relevant and that you can explain each element verbally.",
+      motivation: "Your preparation is visible — invest more time in crafting original, clear visuals and your presentation will shine!"
+    };
+    if(p>=45) return {
+      comment:    "Minimal visual support was provided. The pictorial component did not adequately reflect the effort expected for this seminar level.",
+      problem:    "Visuals were largely absent, generic, or inaccurate. The scientific explanation relied too heavily on text and verbal description alone.",
+      suggestion: "Dedicate focused time to creating diagrams, flowcharts, or process illustrations. Use tools like Canva, draw.io, or PowerPoint SmartArt.",
+      motivation: "Visuals are a powerful communication tool — start building that skill now and it will serve you throughout your career!"
+    };
+    return {
+      comment:    "The pictorial and scientific explanation components were significantly below the expected standard, reflecting insufficient preparation.",
+      problem:    "Visuals were mostly absent or irrelevant. The scientific explanation lacked accuracy and depth, suggesting inadequate project engagement.",
+      suggestion: "Immediately revisit your project topic and build a complete visual narrative. Schedule a preparation review with your faculty mentor.",
+      motivation: "Preparation is a choice — make the decision today to invest fully in your next seminar and the results will speak for themselves!"
+    };
+  },
+
+  /* ── Responding to Queries ──────────────────────────
+     Checks: Sound technical knowledge to handle
+     questions from audience and evaluators             */
+  response: function(p){
+    if(p>=90) return {
+      comment:    "Responded to all queries with outstanding technical accuracy and confidence. Demonstrated deep subject knowledge beyond the slides.",
+      problem:    "No significant difficulties observed during the Q&A. Handled all questions — including unexpected ones — with composure.",
+      suggestion: "Challenge yourself with cross-domain questions and edge cases to further sharpen your technical reasoning under pressure.",
+      motivation: "Your Q&A performance was exceptional — you clearly know your subject inside out. That kind of depth is rare and impressive!"
+    };
+    if(p>=75) return {
+      comment:    "Handled most queries well with good technical understanding. Occasional hesitation was noted on deeper follow-up questions.",
+      problem:    "A few technical questions were answered with some inaccuracy or incomplete reasoning, suggesting minor gaps in depth.",
+      suggestion: "Anticipate potential cross-questions by studying beyond your slides. Practise answering 'what if' and 'why not' type questions.",
+      motivation: "Strong Q&A performance overall — close those small knowledge gaps and you will be unstoppable in the next round!"
+    };
+    if(p>=60) return {
+      comment:    "Managed basic queries reasonably well, but struggled with technical follow-up questions that required deeper understanding.",
+      problem:    "Responses to several technical questions were vague or deflected. Demonstrated surface-level knowledge rather than conceptual depth.",
+      suggestion: "After completing your presentation prep, compile a list of 15 probable questions and prepare detailed answers for each.",
+      motivation: "Every question is a chance to show what you know — prepare deeper and you will start enjoying the Q&A instead of fearing it!"
+    };
+    if(p>=45) return {
+      comment:    "Struggled significantly with most queries. Responses were often incorrect or incomplete, revealing gaps in technical comprehension.",
+      problem:    "The student was unable to address several fundamental questions about their own topic, indicating insufficient conceptual understanding.",
+      suggestion: "Revisit all core concepts of your topic with your textbook and faculty notes. Prepare structured answers for every aspect of your seminar.",
+      motivation: "Deep knowledge comes from repeated study — put in the revision hours now and watch your Q&A confidence transform!"
+    };
+    return {
+      comment:    "Was unable to respond to most queries. The Q&A session revealed a significant lack of technical knowledge about the seminar topic.",
+      problem:    "Fundamental questions about the presentation went unanswered. The student appeared unprepared for evaluator-level technical questioning.",
+      suggestion: "Prioritise subject mastery above all else. Study your topic thoroughly, create topic summaries, and do mock Q&A sessions with peers.",
+      motivation: "Knowledge is built one concept at a time — start today, be consistent, and your understanding will grow stronger every day!"
+    };
+  },
+
+  /* ── Determination / Confidence ────────────────────
+     Checks: Speaking with confidence, conviction,
+     and composure during the seminar presentation     */
+  determination: function(p){
+    if(p>=90) return {
+      comment:    "Presented with outstanding confidence and conviction throughout. Stage presence was strong, with excellent composure under evaluator pressure.",
+      problem:    "No notable confidence or composure issues observed. The student maintained energy and focus from start to finish.",
+      suggestion: "Take on leadership roles in group presentations and peer mentoring to channel and further develop this natural confidence.",
+      motivation: "Your confidence and determination were a standout feature of your seminar — that kind of presence makes a lasting impression!"
+    };
+    if(p>=75) return {
+      comment:    "Displayed good confidence with a composed delivery. Minor moments of hesitation were noted but did not detract significantly.",
+      problem:    "Brief loss of composure was observed when faced with unexpected questions or interruptions. Eye contact could be more consistent.",
+      suggestion: "Practise timed presentations in front of peers or a mirror. Work on maintaining steady eye contact and voice projection throughout.",
+      motivation: "Your confidence is clearly growing — keep challenging yourself in front of audiences and it will become your natural strength!"
+    };
+    if(p>=60) return {
+      comment:    "Showed reasonable confidence in familiar parts of the presentation, but visibly less assured when stepping outside prepared content.",
+      problem:    "Nervousness was evident through fidgeting, reading directly from slides, or a drop in voice volume during critical sections.",
+      suggestion: "Join debate clubs or public speaking groups. Practise your seminar multiple times out loud, not just in your head.",
+      motivation: "Confidence is a muscle — every practice session makes it stronger. You are already showing progress; keep pushing forward!"
+    };
+    if(p>=45) return {
+      comment:    "Presentation lacked confidence, with noticeable hesitation and difficulty maintaining composure throughout the seminar.",
+      problem:    "The student appeared under-prepared and visibly nervous, which impacted clarity of delivery and credibility of content.",
+      suggestion: "Start with low-pressure practice sessions presenting to friends or family. Record yourself and identify areas to improve.",
+      motivation: "Everyone feels nervous at first — the only way through is to keep presenting. Each time you do, it gets easier. Don't stop!"
+    };
+    return {
+      comment:    "Confidence was significantly lacking. Delivery was heavily reliant on notes or slides and lacked conviction or clarity.",
+      problem:    "The student struggled to present independently and showed visible discomfort, impacting the overall quality of the seminar.",
+      suggestion: "Work with a mentor on controlled practice presentations. Break the seminar into small segments and master each one separately.",
+      motivation: "Confidence starts with preparation — once you truly know your material, the nerves fade. Take it one step at a time and believe in your progress!"
+    };
+  },
+
+  /* ── Communication ──────────────────────────────────
+     Checks: Spoken fluency, clarity, flow,
+     and effective academic communication               */
+  communication: function(p){
+    if(p>=90) return {
+      comment:    "Communicated with exceptional clarity, fluency, and flow. Ideas were conveyed logically with an engaging and professional delivery.",
+      problem:    "No communication issues observed. The student maintained consistent pace, tone, and articulation throughout.",
+      suggestion: "Explore advanced communication skills such as technical storytelling, persuasive structuring, and impromptu speaking techniques.",
+      motivation: "Your communication skills set you apart — this is a career-defining strength. Continue nurturing and refining it!"
+    };
+    if(p>=75) return {
+      comment:    "Communicated ideas clearly with good flow and appropriate vocabulary. Minor lapses in pace or transition smoothness were noted.",
+      problem:    "Occasional filler words and slight pacing inconsistencies affected the overall polish of the delivery.",
+      suggestion: "Record your presentations and review them. Focus on eliminating filler words ('um', 'so', 'like') and practise smooth topic transitions.",
+      motivation: "Great communicator in the making — just a little more polish and your delivery will be truly seamless!"
+    };
+    if(p>=60) return {
+      comment:    "Communication was satisfactory but lacked consistent flow. The delivery was sometimes unclear or overly rushed in technical sections.",
+      problem:    "Ideas were not always logically sequenced, and transitions between sections were abrupt. Technical vocabulary was occasionally misused.",
+      suggestion: "Outline your presentation with clear signposting phrases ('First…', 'This leads to…', 'In summary…'). Practise reading aloud daily.",
+      motivation: "Good communication is a skill you can build deliberately — practise speaking clearly every day and you will see rapid improvement!"
+    };
+    if(p>=45) return {
+      comment:    "Communication was below the expected standard. Ideas were difficult to follow and the delivery lacked structure and clarity.",
+      problem:    "Significant gaps in verbal fluency, incorrect use of technical terms, and poor logical sequencing hindered audience comprehension.",
+      suggestion: "Work on structured speaking — prepare a clear intro, body, and conclusion. Practise with a script first, then reduce to bullet points.",
+      motivation: "Clear communication is the bridge between your ideas and your audience — invest in this skill and it will open doors for life!"
+    };
+    return {
+      comment:    "Communication was significantly ineffective. The delivery was unclear, disorganised, and very difficult for the audience to follow.",
+      problem:    "The student struggled to express ideas verbally in a structured manner. Frequent pauses, incorrect terminology, and lack of flow were observed.",
+      suggestion: "Begin with short, structured speaking exercises. Attend communication workshops and seek feedback from faculty on your spoken English.",
+      motivation: "Every great communicator started somewhere — start today, practise consistently, and you will be amazed at how far you can go!"
+    };
+  }
+
+}; // end CATEGORY_FEEDBACK
+
+/* ══ BUILD FEEDBACK OBJECT FROM MARKS ════════════════
+   Backend sends raw avg marks and maxMarks.
+   Frontend converts to levelPct and generates all text.
+══════════════════════════════════════════════════════ */
+function buildFeedbackFromMarks(catKey, score, maxMark) {
+  var pct = Math.round((score / maxMark) * 100);
+  var texts = CATEGORY_FEEDBACK[catKey](pct);
+  return {
+    levelPct:   pct,
+    comment:    texts.comment,
+    problem:    texts.problem,
+    suggestion: texts.suggestion,
+    motivation: texts.motivation
+  };
+}
+
+/* ══ RENDER EVERYTHING ═══════════════════════════════ */
 function renderAll(d){
   if(!d.success){
     document.getElementById('rp-body').innerHTML='<div class="fb-card" style="padding:30px;text-align:center;color:var(--red2)">❌ '+d.message+'</div>';
     return;
   }
-  var info=d.info, fb=d.feedback, perf=d.performance;
+
+  var info=d.info, marks=d.marks, perf=d.performance;
   var now=new Date();
   var ds=now.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
   var refID='RPT/'+info.studentID+'/'+now.getFullYear();
 
   document.getElementById('cv-ref').textContent=refID;
 
-  /* All 6 categories */
+  /* Max marks per category (must match backend definition) */
+  var maxM = {
+    problem:10, methodology:10, pictorial:10,
+    response:10, determination:30, communication:30
+  };
+
+  /* Build feedback client-side from marks */
+  var catKeys = ['problem','methodology','pictorial','response','determination','communication'];
+  var fb = {};
+  catKeys.forEach(function(k){
+    fb[k] = buildFeedbackFromMarks(k, marks[k], maxM[k]);
+  });
+
+  /* Overall percentage (average of all category %s) */
+  var overallPct = Math.round(
+    catKeys.reduce(function(s,k){return s+fb[k].levelPct},0) / catKeys.length
+  );
+  var overallLv = levelInfo(overallPct);
+
+  /* All 6 category display definitions */
   var cats=[
     {key:'problem',       ico:'📋',name:'Problem Statement / Theme'},
     {key:'methodology',   ico:'⚙️', name:'Methodology / Proposed Solution'},
@@ -719,9 +970,6 @@ function renderAll(d){
     {key:'determination', ico:'💪',name:'Determination / Confidence'},
     {key:'communication', ico:'🗣️', name:'Communication'}
   ];
-
-  var overallPct=avgPct(cats.map(function(c){return c.key}),fb);
-  var overallLv=levelInfo(overallPct);
 
   /* ── PAGE 1 HTML ── */
   var h='';
@@ -743,16 +991,16 @@ function renderAll(d){
   h+='</div></div>';
 
   /* Category I */
-  h+=sectionHead('I','Category I — Seminar Content & Presentation');
-  h+=fbCard({ico:'📋',name:'Problem Statement / Theme'},     fb.problem);
+  h+=sectionHead('I','Category I — Seminar Content &amp; Presentation');
+  h+=fbCard({ico:'📋',name:'Problem Statement / Theme'},         fb.problem);
   h+=fbCard({ico:'⚙️', name:'Methodology / Proposed Solution'}, fb.methodology);
   h+=fbCard({ico:'🖼️', name:'Pictorial / Scientific Explanation'}, fb.pictorial);
-  h+=fbCard({ico:'💬',name:'Responding to Queries'},         fb.response);
+  h+=fbCard({ico:'💬',name:'Responding to Queries'},             fb.response);
 
   /* Category II */
-  h+=sectionHead('II','Category II — Personal & Communication Skills');
-  h+=fbCard({ico:'💪',name:'Determination / Confidence'},    fb.determination);
-  h+=fbCard({ico:'🗣️', name:'Communication'},                 fb.communication);
+  h+=sectionHead('II','Category II — Personal &amp; Communication Skills');
+  h+=fbCard({ico:'💪',name:'Determination / Confidence'},        fb.determination);
+  h+=fbCard({ico:'🗣️', name:'Communication'},                    fb.communication);
 
   document.getElementById('rp-body').innerHTML=h;
   document.getElementById('rp-footer').style.display='block';
@@ -839,4 +1087,3 @@ showPage('loginPage');
 </script>
 </body>
 </html>
-
