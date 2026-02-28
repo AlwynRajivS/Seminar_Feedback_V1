@@ -1,602 +1,775 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Seminar Performance Feedback System</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<title>Seminar Feedback Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Lora:wght@600;700&display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --navy:#0b1d3a;--navy-mid:#122952;--blue:#1a4fa0;--blue-light:#2563eb;
-  --accent:#f59e0b;--accent2:#fbbf24;--success:#059669;--danger:#dc2626;
-  --bg:#eef2fb;--surface:#fff;--s2:#f5f8ff;--border:#d4ddf5;
-  --text:#0f172a;--muted:#64748b;
-  --sh-sm:0 1px 4px rgba(11,29,58,.10);--sh-md:0 4px 24px rgba(11,29,58,.13);--sh-lg:0 12px 48px rgba(11,29,58,.20);
-  --r:14px;--rl:20px;
-}
+/* ─── RESET & ROOT ─────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+:root{
+  --ink:#0c1a2e;--ink2:#1e3351;--blue:#1a4fa0;--blue2:#2563eb;
+  --gold:#c9940a;--gold2:#f5c842;--gold3:#fffaeb;
+  --green:#0a6e3a;--green2:#16a34a;--green3:#f0fdf4;
+  --red:#991b1b;--red2:#ef4444;--red3:#fef2f2;
+  --amber:#92400e;--amber2:#f59e0b;--amber3:#fffbeb;
+  --sky:#0369a1;--sky3:#e0f2fe;
+  --purple:#5b21b6;--purple3:#ede9fe;
+  --bg:#eef2f8;--surface:#fff;--border:#d5ddf0;
+  --muted:#64748b;--text:#0f172a;
+  --r:14px;--r2:20px;
+}
+html{font-family:'Sora',sans-serif;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ─── PAGES ────────────────────────────────────────── */
 .page{display:none}
-.page.active{display:block;animation:fadeUp .45s ease both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.page.active{display:block}
 
-/* LOGIN */
-#loginPage{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(150deg,#060f22 0%,#0d1f45 38%,#112248 65%,#1a4fa0 100%);padding:20px;position:relative;overflow:hidden}
-#loginPage::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 75% 55% at 72% 18%,rgba(59,130,246,.13) 0%,transparent 65%),radial-gradient(ellipse 45% 45% at 18% 82%,rgba(245,158,11,.08) 0%,transparent 60%);pointer-events:none}
-#loginPage::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.055) 1px,transparent 1px);background-size:36px 36px;pointer-events:none}
-.login-card{background:#fff;border-radius:24px;box-shadow:0 36px 90px rgba(0,0,0,.45);width:100%;max-width:440px;overflow:hidden;position:relative;z-index:1}
-.login-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 55%,var(--blue-light) 100%);padding:40px 30px 32px;text-align:center;color:#fff;position:relative;overflow:hidden}
-.login-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.09) 0%,transparent 70%);border-radius:50%}
-.login-hero::after{content:'';position:absolute;bottom:-35px;left:-35px;width:130px;height:130px;background:radial-gradient(circle,rgba(245,158,11,.14) 0%,transparent 70%);border-radius:50%}
-.crest{font-size:54px;line-height:1;display:block;margin-bottom:12px;position:relative;z-index:1}
-.login-hero h1{font-size:1.2rem;font-weight:800;letter-spacing:-.3px;line-height:1.35;position:relative;z-index:1}
-.login-hero p{font-size:.79rem;opacity:.72;margin-top:5px;position:relative;z-index:1}
-.badge-row{display:flex;justify-content:center;gap:8px;margin-top:13px;position:relative;z-index:1}
-.h-badge{background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.28);color:#fff;font-size:.67rem;font-weight:700;padding:3px 12px;border-radius:99px;text-transform:uppercase;letter-spacing:.5px}
-.login-body{padding:30px 28px 24px}
-.form-group{margin-bottom:20px}
-.form-label{display:flex;align-items:center;gap:7px;font-size:.77rem;font-weight:800;color:var(--navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:.6px}
-.form-input{width:100%;padding:13px 16px;border:2px solid var(--border);border-radius:11px;font-family:'Outfit',sans-serif;font-size:.96rem;font-weight:600;color:var(--text);background:var(--s2);outline:none;transition:border-color .2s,box-shadow .2s,background .2s;letter-spacing:.3px}
-.form-input:focus{border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(37,99,235,.13);background:#fff}
-.form-input::placeholder{color:#b2bdd6;font-weight:400;font-size:.87rem;letter-spacing:0}
-.input-hint{font-size:.71rem;color:var(--muted);margin-top:4px;padding-left:2px}
-.btn-login{width:100%;padding:14px;background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 50%,var(--blue-light) 100%);color:#fff;border:none;border-radius:11px;font-family:'Outfit',sans-serif;font-size:.97rem;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 5px 18px rgba(26,79,160,.38);display:flex;align-items:center;justify-content:center;gap:9px}
-.btn-login:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 9px 28px rgba(26,79,160,.44)}
-.btn-login:disabled{opacity:.62;cursor:not-allowed;transform:none}
-.alert{padding:12px 15px;border-radius:10px;font-size:.84rem;font-weight:600;margin-top:14px;display:flex;align-items:center;gap:9px;animation:fadeUp .3s ease}
-.alert-danger{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
-.alert-success{background:#f0fdf4;color:#065f46;border:1px solid #a7f3d0}
-.login-foot{text-align:center;font-size:.72rem;color:var(--muted);border-top:1px solid var(--border);padding:14px 28px;line-height:1.75}
+/* ─── LOGIN PAGE ───────────────────────────────────── */
+#loginPage{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  background:#0b1628;
+  position:relative;overflow:hidden;
+}
+.login-bg-dots{
+  position:absolute;inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:30px 30px;pointer-events:none;
+}
+.login-bg-glow{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 10%, rgba(37,99,235,.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 15% 85%, rgba(201,148,10,.12) 0%, transparent 65%);
+}
+.login-card{
+  width:100%;max-width:420px;
+  background:#fff;border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.5);
+  position:relative;z-index:2;
+}
+.lc-hero{
+  background:linear-gradient(145deg,#0b1628 0%,#122244 50%,#1a4fa0 100%);
+  padding:36px 28px 28px;text-align:center;color:#fff;position:relative;overflow:hidden;
+}
+.lc-hero::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:160px;height:160px;
+  background:radial-gradient(circle,rgba(255,255,255,.07) 0%,transparent 70%);
+  border-radius:50%;
+}
+.lc-hero::after{
+  content:'';position:absolute;bottom:-30px;left:-30px;
+  width:110px;height:110px;
+  background:radial-gradient(circle,rgba(245,200,66,.12) 0%,transparent 70%);
+  border-radius:50%;
+}
+.lc-icon{
+  width:64px;height:64px;
+  background:rgba(255,255,255,.12);
+  border:2px solid rgba(255,255,255,.22);
+  border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;margin:0 auto 14px;
+  position:relative;z-index:1;
+}
+.lc-hero h1{
+  font-family:'Lora',serif;
+  font-size:1.35rem;font-weight:700;
+  line-height:1.3;letter-spacing:-.2px;
+  position:relative;z-index:1;
+}
+.lc-hero p{font-size:.78rem;opacity:.65;margin-top:6px;position:relative;z-index:1}
+.lc-tags{display:flex;justify-content:center;gap:8px;margin-top:14px;position:relative;z-index:1;flex-wrap:wrap}
+.lc-tag{
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.22);
+  color:rgba(255,255,255,.9);
+  font-size:.65rem;font-weight:700;
+  padding:3px 12px;border-radius:99px;
+  text-transform:uppercase;letter-spacing:.6px;
+}
+.lc-body{padding:28px 26px 22px}
+.field{margin-bottom:18px}
+.field-label{
+  display:block;font-size:.72rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.8px;
+  color:var(--ink);margin-bottom:7px;
+}
+.field-input{
+  width:100%;padding:13px 16px;
+  border:2px solid var(--border);border-radius:11px;
+  font-family:'Sora',sans-serif;font-size:.95rem;font-weight:500;
+  color:var(--text);background:#f8faff;
+  outline:none;transition:border-color .2s,box-shadow .2s,background .2s;
+  -webkit-appearance:none;
+}
+.field-input:focus{
+  border-color:var(--blue2);
+  box-shadow:0 0 0 3px rgba(37,99,235,.12);
+  background:#fff;
+}
+.field-input::placeholder{color:#b0bbd6;font-size:.87rem;font-weight:400}
+.field-hint{font-size:.7rem;color:var(--muted);margin-top:5px}
+.btn-login{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,#0b1628 0%,#1a4fa0 60%,#2563eb 100%);
+  color:#fff;border:none;border-radius:11px;
+  font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  box-shadow:0 6px 20px rgba(26,79,160,.4);
+  transition:transform .15s,box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(26,79,160,.45)}
+.btn-login:active{transform:translateY(0)}
+.btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.login-alert{
+  margin-top:14px;padding:11px 14px;
+  border-radius:10px;font-size:.83rem;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+  animation:fadeSlide .3s ease;
+}
+.la-err{background:var(--red3);color:var(--red);border:1px solid #fca5a5}
+.la-ok{background:var(--green3);color:var(--green);border:1px solid #86efac}
+.lc-foot{
+  text-align:center;font-size:.7rem;color:var(--muted);
+  border-top:1px solid var(--border);
+  padding:14px 26px;line-height:1.8;
+}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 
-/* STUDENT PAGE */
-.app-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 50%,var(--blue) 100%);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 3px 22px rgba(0,0,0,.3)}
-.header-inner{max-width:1060px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:14px}
-.h-logo{width:46px;height:46px;flex-shrink:0;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.28);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px}
-.h-title h1{font-size:clamp(.85rem,2vw,1.08rem);font-weight:800;letter-spacing:-.3px}
-.h-title p{font-size:.7rem;opacity:.68;margin-top:2px}
-.h-right{margin-left:auto;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.ro-badge{background:var(--accent);color:#1c0500;font-size:.63rem;font-weight:800;padding:3px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
-.btn-action{background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.3);color:#fff;padding:7px 14px;border-radius:99px;font-size:.76rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background .2s}
-.btn-action:hover{background:rgba(255,255,255,.22)}
-.btn-pdf{background:rgba(245,158,11,.28);border-color:rgba(245,158,11,.65);color:#fef3c7}
-.btn-pdf:hover{background:rgba(245,158,11,.42)}
-.main-wrap{max-width:1060px;margin:0 auto;padding:26px 18px 70px}
+/* ─── STUDENT REPORT PAGE ──────────────────────────── */
+#reportPage{display:none;min-height:100vh}
+.rp-header{
+  background:linear-gradient(135deg,#0b1628 0%,#122244 45%,#1a4fa0 100%);
+  color:#fff;padding:14px 18px;
+  display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
+}
+.rp-hlogo{
+  width:40px;height:40px;flex-shrink:0;
+  background:rgba(255,255,255,.13);
+  border:1.5px solid rgba(255,255,255,.25);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.rp-htitle h1{font-size:.92rem;font-weight:700;line-height:1.25}
+.rp-htitle p{font-size:.65rem;opacity:.6;margin-top:2px}
+.rp-hright{margin-left:auto;display:flex;gap:8px;align-items:center;flex-shrink:0}
+.hbtn{
+  background:rgba(255,255,255,.13);
+  border:1.5px solid rgba(255,255,255,.27);
+  color:#fff;padding:7px 13px;border-radius:99px;
+  font-family:'Sora',sans-serif;font-size:.72rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+  white-space:nowrap;transition:background .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.hbtn:hover{background:rgba(255,255,255,.22)}
+.hbtn-pdf{background:rgba(201,148,10,.28);border-color:rgba(245,200,66,.5);color:#fef9c3}
+.hbtn-pdf:hover{background:rgba(201,148,10,.42)}
 
-/* Student bar */
-.s-bar{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);border-radius:var(--rl);padding:22px 26px;color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin-bottom:24px;box-shadow:var(--sh-lg);position:relative;overflow:hidden}
-.s-bar::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.07) 0%,transparent 70%);border-radius:50%;pointer-events:none}
-.s-avatar{width:58px;height:58px;flex-shrink:0;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px}
-.s-meta h2{font-size:1.2rem;font-weight:800;letter-spacing:-.3px}
-.s-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}
-.s-chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:3px 12px;font-size:.72rem;font-weight:600}
-.perf-box{margin-left:auto;flex-shrink:0;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.25);border-radius:14px;padding:13px 20px;text-align:center}
-.perf-lbl{font-size:.66rem;opacity:.72;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
-.perf-val{font-size:1.1rem;font-weight:800;color:var(--accent2);line-height:1.2}
+.rp-body{padding:16px 14px 60px;max-width:700px;margin:0 auto}
 
-/* Section title */
-.sec-title{display:flex;align-items:center;gap:10px;font-size:.71rem;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;color:var(--navy);margin-bottom:14px}
-.sec-title::before{content:'';width:4px;height:18px;background:var(--accent);border-radius:99px;flex-shrink:0}
+/* Student card */
+.stu-card{
+  background:linear-gradient(140deg,#0b1628 0%,#1a4fa0 100%);
+  border-radius:var(--r2);color:#fff;padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 8px 30px rgba(11,22,40,.3);
+  position:relative;overflow:hidden;
+}
+.stu-card::before{
+  content:'';position:absolute;top:-50px;right:-50px;
+  width:160px;height:160px;
+  background:radial-gradient(circle,rgba(255,255,255,.07) 0%,transparent 70%);
+  border-radius:50%;pointer-events:none;
+}
+.stu-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.stu-avatar{
+  width:52px;height:52px;flex-shrink:0;
+  background:rgba(255,255,255,.15);
+  border:2px solid rgba(255,255,255,.28);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.stu-name{font-family:'Lora',serif;font-size:1.1rem;font-weight:700;line-height:1.2}
+.stu-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.stu-chip{
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:99px;padding:3px 11px;
+  font-size:.67rem;font-weight:600;
+}
+.stu-perf{
+  background:rgba(255,255,255,.12);
+  border:1.5px solid rgba(255,255,255,.22);
+  border-radius:12px;padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.perf-lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;opacity:.7}
+.perf-val{font-family:'Lora',serif;font-size:1.15rem;font-weight:700;color:var(--gold2)}
+
+/* Section heading */
+.sec-head{
+  display:flex;align-items:center;gap:10px;
+  margin:20px 0 12px;
+}
+.sec-head-num{
+  width:26px;height:26px;background:var(--ink);color:#fff;
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:800;flex-shrink:0;
+}
+.sec-head-txt{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--ink)}
+.sec-head-line{flex:1;height:1.5px;background:linear-gradient(90deg,var(--border),transparent)}
 
 /* Feedback card */
-.fb-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh-sm);margin-bottom:20px}
-.fb-card-head{background:linear-gradient(90deg,var(--navy) 0%,var(--blue) 100%);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:11px}
-.fb-card-head .hico{font-size:20px}
-.fb-card-head h3{font-size:.95rem;font-weight:700;letter-spacing:-.2px}
-.fb-card-body{padding:22px}
+.fb-card{
+  background:#fff;border:1.5px solid var(--border);
+  border-radius:var(--r);margin-bottom:12px;
+  overflow:hidden;box-shadow:0 2px 8px rgba(11,22,40,.07);
+}
+.fb-card-head{
+  background:linear-gradient(90deg,var(--ink) 0%,var(--blue) 100%);
+  color:#fff;padding:11px 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.fb-head-left{display:flex;align-items:center;gap:9px}
+.fb-head-icon{font-size:1rem}
+.fb-head-name{font-size:.87rem;font-weight:700}
+.fb-level-pill{
+  font-size:.67rem;font-weight:800;
+  padding:3px 12px;border-radius:99px;
+  white-space:nowrap;
+}
+.lp-os{background:#dcfce7;color:#065f46}
+.lp-ex{background:#dbeafe;color:#1e3a8a}
+.lp-vg{background:#e0f2fe;color:#0c4a6e}
+.lp-gd{background:#fef3c7;color:#78350f}
+.lp-sa{background:#ffedd5;color:#7c2d12}
+.lp-ni{background:#fee2e2;color:#7f1d1d}
 
-/* Category sub */
-.cat-sub{margin-bottom:26px;padding-bottom:26px;border-bottom:2px dashed var(--border)}
-.cat-sub:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
-.cat-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
-.cat-name{display:flex;align-items:center;gap:8px;font-size:.96rem;font-weight:800;color:var(--navy)}
-.cat-name .ico{font-size:1.1rem}
-
-/* LEVEL BADGE */
-.level-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:99px;font-size:.78rem;font-weight:800;letter-spacing:.3px;border:2px solid;white-space:nowrap}
-.lv-outstanding{background:#ecfdf5;color:#065f46;border-color:#059669}
-.lv-excellent{background:#eff6ff;color:#1e40af;border-color:#2563eb}
-.lv-verygood{background:#f0f9ff;color:#075985;border-color:#0284c7}
-.lv-good{background:#fffbeb;color:#92400e;border-color:#d97706}
-.lv-satisfactory{background:#fff7ed;color:#9a3412;border-color:#ea580c}
-.lv-improve{background:#fef2f2;color:#991b1b;border-color:#dc2626}
-
-/* Feedback grid */
-.fb-grid{display:grid;gap:11px;grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}
-.fb-row{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:14px 15px;display:flex;flex-direction:column;gap:7px;transition:box-shadow .2s,transform .2s}
-.fb-row:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
-.fb-row.t-comment{border-left:4px solid #3b82f6}
-.fb-row.t-problem{border-left:4px solid #ef4444}
-.fb-row.t-suggest{border-left:4px solid #10b981}
-.fb-row.t-motivate{border-left:4px solid #f59e0b}
-.fb-tag{display:inline-flex;align-items:center;gap:5px;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:2px 10px;border-radius:99px;align-self:flex-start}
-.fb-tag.t-comment{background:#eff6ff;color:#1d4ed8}
-.fb-tag.t-problem{background:#fef2f2;color:#b91c1c}
-.fb-tag.t-suggest{background:#f0fdf4;color:#065f46}
-.fb-tag.t-motivate{background:#fffbeb;color:#92400e}
-.fb-text{font-size:.87rem;line-height:1.65;color:var(--text)}
+.fb-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:480px){.fb-grid{grid-template-columns:1fr}}
+.fb-cell{
+  padding:13px 15px;
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.fb-cell:nth-child(2n){border-right:none}
+@media(max-width:480px){.fb-cell{border-right:none}}
+.fb-cell:nth-last-child(-n+2){border-bottom:none}
+@media(max-width:480px){.fb-cell:last-child{border-bottom:none};.fb-cell:nth-last-child(2){border-bottom:1px solid var(--border)}}
+.fb-cell.c-comment{border-top:3px solid #3b82f6}
+.fb-cell.c-problem{border-top:3px solid #ef4444}
+.fb-cell.c-suggest{border-top:3px solid #10b981}
+.fb-cell.c-motivate{border-top:3px solid #f59e0b}
+.fb-cell-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.63rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+  margin-bottom:6px;
+}
+.fb-cell-tag.t-comment{color:#1d4ed8}
+.fb-cell-tag.t-problem{color:#b91c1c}
+.fb-cell-tag.t-suggest{color:#065f46}
+.fb-cell-tag.t-motivate{color:#92400e}
+.fb-cell-text{font-size:.84rem;line-height:1.6;color:var(--text)}
 
 /* Spinner */
-.spinner-wrap{display:flex;flex-direction:column;align-items:center;padding:70px;gap:18px}
-.spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--blue-light);border-radius:50%;animation:spin .75s linear infinite}
+.spinner-box{display:flex;flex-direction:column;align-items:center;padding:60px 20px;gap:16px}
+.spinner{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--blue2);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.page-footer{text-align:center;padding:20px;font-size:.73rem;color:var(--muted);border-top:1px solid var(--border);margin-top:10px;line-height:1.8}
 
-/* ══ PDF / PRINT — STRICT 2-PAGE LAYOUT ════════════════════
-   PAGE 1 : Report header + student info + all feedback cards
-   PAGE 2 : Mentor submission & signature table ONLY
-══════════════════════════════════════════════════════════ */
+.rp-footer{text-align:center;font-size:.7rem;color:var(--muted);padding:16px;border-top:1px solid var(--border);margin-top:8px}
+
+/* ─── PRINT / PDF ──────────────────────────────────── */
 @media print{
-  @page{size:A4;margin:12mm 13mm}
+  @page{size:A4;margin:11mm 12mm}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;font-size:9.5pt}
 
-  /* hide all screen-only UI */
-  .app-header,.h-right,.btn-action,.btn-pdf,.ro-badge,
-  .page-footer,#logoutBtn,#pdfBtn,#loginPage{display:none!important}
-  .page.active{animation:none!important}
+  /* hide screen-only elements */
+  .rp-header,.no-print,.rp-footer{display:none!important}
+  #loginPage{display:none!important}
+  #reportPage{display:block!important;min-height:0!important}
+  .rp-body{padding:0!important;max-width:100%!important;margin:0!important}
 
-  body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:9.5pt;color:#0f172a}
+  /* PDF cover */
+  #pdf-cover{display:flex!important}
 
-  /* ── PAGE 1 wrapper ─────────────────────────────── */
-  #page1{display:block!important}
+  /* Page 1 content */
+  .stu-card{border-radius:6px!important;padding:14px!important;margin-bottom:10px!important;page-break-inside:avoid}
+  .sec-head{margin:10px 0 8px!important}
+  .fb-card{margin-bottom:8px!important;border-radius:5px!important;page-break-inside:avoid;box-shadow:none!important;border:1px solid #bcc6e0!important}
+  .fb-card-head{padding:7px 12px!important}
+  .fb-head-name{font-size:8.5pt!important}
+  .fb-cell{padding:8px 10px!important}
+  .fb-cell-text{font-size:7.5pt!important;line-height:1.45!important}
+  .fb-cell-tag{font-size:.58rem!important}
+  .fb-level-pill{font-size:6.5pt!important;padding:2px 8px!important}
+  .sec-head-txt{font-size:7.5pt!important}
+  .stu-name{font-size:.95rem!important}
+  .stu-chip{font-size:.62rem!important}
 
-  /* PDF report header (page 1 top) */
-  #pdfCover{
+  /* Page break before page 2 */
+  #page2-content{
     display:block!important;
-    text-align:center;
-    padding:8px 0 12px;
-    margin-bottom:12px;
-    border-bottom:3px solid #0b1d3a;
-  }
-
-  .main-wrap{padding:0!important;max-width:100%!important;margin:0!important}
-
-  /* Student info bar */
-  .s-bar{
-    background:#0b1d3a!important;
-    border-radius:6px!important;
-    padding:12px 16px!important;
-    margin-bottom:10px!important;
-    page-break-inside:avoid;
-  }
-  .s-bar *{color:#fff!important}
-  .perf-box{background:#1e3a6a!important;border-color:rgba(255,255,255,.3)!important}
-
-  /* Section titles */
-  .sec-title{font-size:8pt!important;margin-bottom:7px!important;margin-top:10px!important}
-
-  /* Feedback cards */
-  .fb-card{
-    box-shadow:none!important;border:1px solid #bbb!important;
-    border-radius:6px!important;margin-bottom:9px!important;
-    page-break-inside:avoid;
-  }
-  .fb-card-head{
-    background:#1a4fa0!important;
-    padding:8px 14px!important;
-  }
-  .fb-card-head h3{font-size:9pt!important}
-  .fb-card-body{padding:10px 12px!important}
-
-  /* Category sub-sections */
-  .cat-sub{
-    margin-bottom:10px!important;
-    padding-bottom:10px!important;
-    page-break-inside:avoid;
-  }
-  .cat-sub:last-child{border-bottom:none!important}
-  .cat-top{margin-bottom:8px!important}
-  .cat-name{font-size:8.5pt!important}
-  .level-badge{font-size:7pt!important;padding:2px 9px!important}
-
-  /* Feedback grid — 2 columns in print */
-  .fb-grid{grid-template-columns:repeat(2,1fr)!important;gap:6px!important}
-  .fb-row{padding:7px 9px!important;border-radius:5px!important}
-  .fb-row:hover{transform:none!important;box-shadow:none!important}
-  .fb-tag{font-size:.6rem!important;padding:1px 7px!important}
-  .fb-text{font-size:8pt!important;line-height:1.45!important}
-
-  /* ── PAGE BREAK before page 2 ───────────────────── */
-  #submitBox{
-    display:block!important;
-    page-break-before:always; /* ← forces PAGE 2 start */
+    page-break-before:always;
     margin-top:0!important;
-    border:2px solid #0b1d3a;
-    border-radius:0;
   }
+
+  .sig-table td,.grade-table td,.grade-table th{font-size:8pt!important;padding:7px 10px!important}
+
+  /* keep fb-grid 2 col in print */
+  .fb-grid{grid-template-columns:1fr 1fr!important}
+  .fb-cell:nth-child(2n){border-right:none!important}
+  .fb-cell:nth-last-child(-n+2){border-bottom:none!important}
 }
 
-/* PDF cover header — page 1 top, hidden on screen */
-#pdfCover{
+/* ─── PDF COVER (screen: hidden; print: visible) ───── */
+#pdf-cover{
   display:none;
-  text-align:center;
-  padding:8px 0 14px;
+  align-items:center;gap:14px;
+  padding:10px 0 12px;
+  margin-bottom:12px;
+  border-bottom:3px solid #0b1628;
+}
+#pdf-cover .cv-logo{
+  width:48px;height:48px;
+  background:linear-gradient(135deg,#0b1628,#1a4fa0);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;
+}
+#pdf-cover .cv-title{font-family:'Lora',serif;font-size:13pt;font-weight:700;color:#0b1628;letter-spacing:-.2px}
+#pdf-cover .cv-sub{font-size:8pt;color:#475569;margin-top:3px}
+#pdf-cover .cv-meta{margin-left:auto;text-align:right;font-size:7.5pt;color:#64748b;line-height:1.85}
+#pdf-cover .cv-meta strong{color:#0b1628}
+
+/* ─── PAGE 2 CONTENT ───────────────────────────────── */
+#page2-content{display:none}
+.p2-head{
+  background:linear-gradient(135deg,#0b1628,#1a4fa0);
+  border-radius:8px;padding:12px 18px;
+  color:#fff;display:flex;align-items:center;justify-content:space-between;
   margin-bottom:14px;
-  border-bottom:3px solid #0b1d3a;
 }
-#pdfCover .inst{font-size:13pt;font-weight:800;color:#0b1d3a;letter-spacing:.5px;text-transform:uppercase}
-#pdfCover .subtitle{font-size:9pt;color:#334155;margin-top:4px}
-#pdfCover .gendate{font-size:7.5pt;color:#64748b;margin-top:5px}
+.p2-head-title{font-family:'Lora',serif;font-size:11pt;font-weight:700}
+.p2-head-sub{font-size:7pt;opacity:.7;margin-top:2px}
 
-/* Submit/signature box — page 2, hidden on screen */
-#submitBox{
-  display:none;
-  border:2px solid #0b1d3a;
-  overflow:hidden;
+/* Grade table */
+.grade-wrap{margin-bottom:14px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden}
+.grade-table{width:100%;border-collapse:collapse;font-size:8.5pt}
+.grade-table th{
+  background:#0b1628;color:#fff;
+  padding:9px 13px;text-align:left;
+  font-weight:700;font-size:7.5pt;letter-spacing:.4px;
 }
-#submitBox .sb-head{
-  background:#0b1d3a;color:#fff;
-  padding:12px 20px;
-  font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
-  text-align:center;
+.grade-table td{padding:9px 13px;border-bottom:1px solid var(--border);vertical-align:middle}
+.grade-table tr:last-child td{border-bottom:none}
+.grade-table tr:nth-child(even) td{background:#f8faff}
+.grade-table tfoot td{background:#f0f4ff!important;font-weight:800;font-size:9pt;border-top:2px solid #0b1628}
+.gp{display:inline-block;padding:3px 11px;border-radius:99px;font-weight:800;font-size:7pt}
+.gp-os{background:#dcfce7;color:#065f46}
+.gp-ex{background:#dbeafe;color:#1e3a8a}
+.gp-vg{background:#e0f2fe;color:#0c4a6e}
+.gp-gd{background:#fef3c7;color:#78350f}
+.gp-sa{background:#ffedd5;color:#7c2d12}
+.gp-ni{background:#fee2e2;color:#7f1d1d}
+.stars{color:#c9940a;letter-spacing:1px}
+
+/* Student details for p2 */
+.detail-table-wrap{margin-bottom:14px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden}
+.detail-table-head{background:#0b1628;color:#fff;padding:9px 14px;font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+.detail-table{width:100%;border-collapse:collapse;font-size:8.5pt}
+.detail-table td{padding:9px 14px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);vertical-align:middle}
+.detail-table td:last-child{border-right:none}
+.detail-table tr:last-child td{border-bottom:none}
+.dt-lbl{background:#f5f8ff;font-weight:700;color:#0b1628;width:28%}
+.dt-val{font-weight:500}
+.dt-val.hl{font-weight:900;color:#0b1628;font-size:10pt}
+
+/* Signature */
+.sig-wrap{margin-bottom:14px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden}
+.sig-head{background:#0b1628;color:#fff;padding:9px 14px;font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+.sig-table{width:100%;border-collapse:collapse;font-size:8.5pt}
+.sig-table td{padding:9px 14px;border:1px solid var(--border)}
+.sig-table td.sig-lbl{background:#f5f8ff;font-weight:700;color:#0b1628;width:28%}
+.sig-table td.sig-line{height:54px;vertical-align:bottom;padding-bottom:7px;font-size:7pt;color:#94a3b8}
+.sig-table td.remarks{height:58px;vertical-align:top;padding-top:9px;font-size:7.5pt;color:#94a3b8}
+
+.notice{
+  background:#f0f9ff;border:1.5px solid #bae6fd;
+  border-radius:8px;padding:10px 16px;
+  font-size:7.5pt;line-height:1.75;color:#0c4a6e;
+  margin-bottom:14px;
 }
-#submitBox .sb-subhead{
-  background:#1a4fa0;color:#fff;
-  padding:7px 20px;
-  font-size:8.5pt;font-weight:600;
-  text-align:center;letter-spacing:.2px;
+.notice strong{color:#0369a1}
+
+/* p2 footer */
+.p2-footer{
+  border-top:1px solid var(--border);
+  padding:7px 0;display:flex;align-items:center;justify-content:space-between;
+  font-size:7pt;color:var(--muted);
 }
-#submitBox .sb-section-title{
-  background:#f0f4ff;color:#0b1d3a;
-  padding:7px 16px;
-  font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:.6px;
-  border-top:1px solid #d4ddf5;border-bottom:1px solid #d4ddf5;
-}
-#submitBox table{width:100%;border-collapse:collapse;font-size:9.5pt}
-#submitBox td{padding:9px 16px;border:1px solid #d4ddf5;vertical-align:middle}
-#submitBox td.lbl{font-weight:700;color:#0b1d3a;width:36%;background:#f5f8ff}
-#submitBox td.val{font-weight:500;color:#1e293b}
-#submitBox td.val.highlight{font-weight:800;color:#0b1d3a;font-size:10.5pt}
-#submitBox .sig-row td{height:52px;vertical-align:bottom;padding-bottom:6px;font-size:8pt;color:#64748b}
-#submitBox .sig-row td.lbl{vertical-align:middle}
-#submitBox .sig-note{
-  font-size:7.5pt;color:#475569;
-  padding:9px 16px;
-  border-top:2px solid #0b1d3a;
-  background:#f0f4ff;
-  font-style:italic;
-  text-align:center;
+.pnum{
+  background:#0b1628;color:#fff;
+  padding:2px 9px;border-radius:4px;
+  font-size:6.5pt;font-weight:700;
 }
 
-@media(max-width:640px){
-  .header-inner{padding:12px 14px}.main-wrap{padding:14px 11px 60px}
-  .s-bar{padding:16px}.fb-card-body{padding:15px}
-  .fb-grid{grid-template-columns:1fr}.login-body{padding:22px 20px 20px}
-  .login-hero{padding:30px 20px 26px}.ro-badge{display:none}
-  .perf-box{margin-left:0;width:100%}.cat-top{flex-direction:column;align-items:flex-start}
+/* Responsive tweaks */
+@media(max-width:360px){
+  .lc-hero{padding:28px 18px 22px}
+  .lc-body{padding:22px 18px 18px}
+  .rp-hright .hbtn span{display:none}
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- ══════════════════════════════════════
+     LOGIN PAGE
+══════════════════════════════════════ -->
 <div id="loginPage" class="page active">
-<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(150deg,#060f22 0%,#0d1f45 38%,#112248 65%,#1a4fa0 100%);padding:20px;position:relative;overflow:hidden">
-  <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.055) 1px,transparent 1px);background-size:36px 36px;pointer-events:none"></div>
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 75% 55% at 72% 18%,rgba(59,130,246,.13) 0%,transparent 65%),radial-gradient(ellipse 45% 45% at 18% 82%,rgba(245,158,11,.08) 0%,transparent 60%);pointer-events:none"></div>
-  <div class="login-card" style="position:relative;z-index:1">
-    <div class="login-hero">
-      <span class="crest">🎓</span>
-      <h1>Seminar Performance<br>Feedback System</h1>
-      <p>Higher Semester Seminar Day &nbsp;·&nbsp; Student Portal</p>
-      <div class="badge-row">
-        <span class="h-badge">🔒 Read Only</span>
-        <span class="h-badge">📋 Feedback Report</span>
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#0b1628;position:relative;overflow:hidden">
+    <div class="login-bg-dots"></div>
+    <div class="login-bg-glow"></div>
+    <div class="login-card">
+      <div class="lc-hero">
+        <div class="lc-icon">🎓</div>
+        <h1>Seminar Performance<br>Feedback System</h1>
+        <p>Higher Semester Seminar Day &nbsp;·&nbsp; Student Portal</p>
+        <div class="lc-tags">
+          <span class="lc-tag">🔒 Read Only</span>
+          <span class="lc-tag">📋 Feedback Report</span>
+        </div>
       </div>
-    </div>
-    <div class="login-body">
-      <div class="form-group">
-        <label class="form-label"><span>🪪</span> Student ID</label>
-        <input id="inp_sid" class="form-input" type="text" placeholder="e.g.  24UAD001" autocomplete="off"
-          oninput="this.value=this.value.toUpperCase()"
-          onkeydown="if(event.key==='Enter')document.getElementById('inp_tid').focus()"/>
-        <div class="input-hint">Enter your registered Student ID</div>
+      <div class="lc-body">
+        <div class="field">
+          <label class="field-label" for="inp_sid">Student ID</label>
+          <input id="inp_sid" class="field-input" type="text" placeholder="e.g. 24UAD001"
+            autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"
+            oninput="this.value=this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter')document.getElementById('inp_tid').focus()"/>
+          <div class="field-hint">Enter your registered Student ID</div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="inp_tid">Team ID <small style="font-weight:400;text-transform:none;letter-spacing:0;color:#94a3b8;font-size:.72rem">(Password)</small></label>
+          <input id="inp_tid" class="field-input" type="password" placeholder="e.g. ADS_B_01"
+            autocomplete="current-password"
+            onkeydown="if(event.key==='Enter')doLogin()"/>
+          <div class="field-hint">Your Team ID acts as your password</div>
+        </div>
+        <button class="btn-login" id="loginBtn" onclick="doLogin()">
+          <span id="btn_ico">🔓</span><span id="btn_txt">View My Feedback</span>
+        </button>
+        <div id="loginAlert"></div>
       </div>
-      <div class="form-group">
-        <label class="form-label"><span>🔑</span> Team ID &nbsp;<small style="font-weight:400;text-transform:none;letter-spacing:0;color:#94a3b8;font-size:.73rem">(Password)</small></label>
-        <input id="inp_tid" class="form-input" type="password" placeholder="e.g.  ADS_B_01"
-          onkeydown="if(event.key==='Enter')doLogin()"/>
-        <div class="input-hint">Your Team ID acts as your password</div>
+      <div class="lc-foot">
+        Use your <strong>Student ID</strong> as username &amp; <strong>Team ID</strong> as password<br>
+        Read-only portal — no data can be modified
       </div>
-      <button class="btn-login" id="loginBtn" onclick="doLogin()">
-        <span id="btn_icon">🔓</span><span id="btn_text">View My Feedback</span>
-      </button>
-      <div id="loginAlert"></div>
-    </div>
-    <div class="login-foot">
-      Use your <strong>Student ID</strong> as username &amp; <strong>Team ID</strong> as password<br>
-      Read-only portal — no data can be modified
     </div>
   </div>
-  <p style="color:rgba(255,255,255,.32);font-size:.7rem;margin-top:20px;text-align:center;position:relative;z-index:1">© Seminar Feedback System &nbsp;·&nbsp; Powered by Google Sheets</p>
-</div>
 </div>
 
-<!-- STUDENT PAGE -->
-<div id="studentPage" class="page">
-  <header class="app-header">
-    <div class="header-inner">
-      <div class="h-logo">🎓</div>
-      <div class="h-title">
-        <h1>Seminar Performance Feedback System</h1>
-        <p>Higher Semester Seminar Day &nbsp;·&nbsp; Student Feedback Report</p>
-      </div>
-      <div class="h-right">
-        <span class="ro-badge">Read Only</span>
-        <button class="btn-action btn-pdf" id="pdfBtn" onclick="downloadPDF()">📥 Download PDF</button>
-        <button class="btn-action" id="logoutBtn" onclick="doLogout()">🚪 Logout</button>
-      </div>
+<!-- ══════════════════════════════════════
+     REPORT PAGE
+══════════════════════════════════════ -->
+<div id="reportPage" class="page">
+
+  <!-- App header (screen only) -->
+  <header class="rp-header no-print">
+    <div class="rp-hlogo">🎓</div>
+    <div class="rp-htitle">
+      <h1>Seminar Feedback Report</h1>
+      <p>Higher Semester Seminar Day</p>
+    </div>
+    <div class="rp-hright">
+      <button class="hbtn hbtn-pdf" onclick="doPDF()">📥 <span>Download PDF</span></button>
+      <button class="hbtn" onclick="doLogout()">🚪 <span>Logout</span></button>
     </div>
   </header>
 
-  <!-- PDF-only cover header -->
-  <div id="pdfCover">
-    <div class="inst">SEMINAR PERFORMANCE FEEDBACK REPORT</div>
-    <div class="subtitle">Higher Semester Seminar Day &nbsp;|&nbsp; Student Feedback Report</div>
-    <div class="gendate" id="pdfDate"></div>
+  <!-- PDF cover — shown only in print -->
+  <div id="pdf-cover">
+    <div class="cv-logo">🎓</div>
+    <div>
+      <div class="cv-title">Seminar Performance Feedback Report</div>
+      <div class="cv-sub">Higher Semester Seminar Day &nbsp;·&nbsp; Student Feedback Report</div>
+    </div>
+    <div class="cv-meta">
+      <div><strong>Date:</strong> <span id="cv-date">—</span></div>
+      <div><strong>Report ID:</strong> <span id="cv-ref">—</span></div>
+      <div><strong>Status:</strong> ✅ Verified</div>
+    </div>
   </div>
 
-  <div class="main-wrap" id="fbContent">
+  <!-- Page 1 body -->
+  <div class="rp-body" id="rp-body">
     <div class="fb-card">
-      <div class="spinner-wrap">
+      <div class="spinner-box">
         <div class="spinner"></div>
-        <p style="color:var(--muted);font-size:.9rem">Loading your feedback…</p>
+        <p style="font-size:.88rem;color:var(--muted)">Loading your feedback…</p>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════
-       PDF PAGE 2 — Mentor Submission & Signature Table
-       Hidden on screen, appears as page 2 in print/PDF
-  ════════════════════════════════════════════════════ -->
-  <div id="submitBox">
-    <div class="sb-head">📌 Seminar Performance Feedback — Mentor Submission Copy</div>
-    <div class="sb-subhead">Higher Semester Seminar Day &nbsp;·&nbsp; Student Acknowledgement Form</div>
-
-    <!-- Student Details -->
-    <div class="sb-section-title">🎓 Student Details</div>
-    <table>
-      <tr><td class="lbl">Student Name</td><td class="val" id="sb_name"></td><td class="lbl">Student ID</td><td class="val" id="sb_sid"></td></tr>
-      <tr><td class="lbl">Department</td><td class="val" id="sb_dept"></td><td class="lbl">Team ID</td><td class="val" id="sb_team"></td></tr>
-      <tr><td class="lbl">Venue / Panel</td><td class="val" id="sb_venue"></td><td class="lbl">Batch</td><td class="val" id="sb_batch"></td></tr>
-      <tr><td class="lbl">Overall Performance</td><td class="val highlight" colspan="3" id="sb_perf"></td></tr>
-    </table>
-
-    <!-- Feedback Summary -->
-    <div class="sb-section-title">📋 Feedback Summary</div>
-    <table>
-      <tr>
-        <td class="lbl">Category I</td>
-        <td class="val">
-          Problem Statement &nbsp;·&nbsp; Methodology &nbsp;·&nbsp;
-          Pictorial / Scientific &nbsp;·&nbsp; Responding to Queries
-        </td>
-      </tr>
-      <tr>
-        <td class="lbl">Category II</td>
-        <td class="val">Determination / Confidence &nbsp;·&nbsp; Communication</td>
-      </tr>
-      <tr>
-        <td class="lbl">Report Date</td>
-        <td class="val" id="sb_date"></td>
-      </tr>
-    </table>
-
-    <!-- Signatures -->
-    <div class="sb-section-title">✍️ Signatures &amp; Acknowledgement</div>
-    <table>
-      <tr class="sig-row">
-        <td class="lbl">Student Signature</td>
-        <td style="height:55px;border:1px solid #d4ddf5"></td>
-        <td class="lbl">Date</td>
-        <td style="height:55px;border:1px solid #d4ddf5"></td>
-      </tr>
-      <tr class="sig-row">
-        <td class="lbl">Mentor / Class Advisor<br>Signature</td>
-        <td style="height:55px;border:1px solid #d4ddf5"></td>
-        <td class="lbl">Date of Submission</td>
-        <td style="height:55px;border:1px solid #d4ddf5"></td>
-      </tr>
-      <tr class="sig-row">
-        <td class="lbl">Mentor Remarks</td>
-        <td colspan="3" style="height:60px;border:1px solid #d4ddf5"></td>
-      </tr>
-    </table>
-
-    <div class="sig-note">
-      ★ Student must print this report, sign it, and submit to their Mentor / Class Advisor for acknowledgement and record-keeping.
-    </div>
+  <!-- PAGE 2 — Grade table + Submission (print only) -->
+  <div id="page2-content">
+    <!-- This is injected by JS after data loads -->
   </div>
 
-  <div class="page-footer" id="fbFooter" style="display:none">
-    📋 Read-only feedback report &nbsp;·&nbsp; For concerns, contact your faculty coordinator<br>
-    <span id="footerInfo"></span>
+  <div class="rp-footer no-print" id="rp-footer" style="display:none">
+    📋 Read-only feedback report &nbsp;·&nbsp; Contact your faculty coordinator for any concerns
   </div>
 </div>
 
 <script>
-/* ════════════════════════════════════════════════════════════
-   ⚙️  STEP 1 — PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
-   ──────────────────────────────────────────────────────────
-   After deploying Code.gs as a Web App in Google Apps Script,
-   copy the URL (looks like below) and replace the placeholder.
-
-   Example:
-   https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec
-
-   ⚠️  Make sure deployment settings are:
-       Execute as  → Me
-       Who can access → Anyone
-════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   CONFIG — paste your Google Apps Script URL
+══════════════════════════════════════════════ */
 var GAS_URL = "https://script.google.com/macros/s/AKfycbyx7EJzl7xeJ6d9gsJwVH1pXYzhaUYYWrwP7wW0VnBqZcFSIbmsPhheudWVtUwNrgc/exec";
-//            ↑↑↑  ONLY THIS LINE NEEDS TO BE CHANGED  ↑↑↑
 
-/* ════════════════════════════════════════════════════════════
-   Everything below is automatic — do not change
-════════════════════════════════════════════════════════════ */
-
+/* ══ PAGE SWITCHING ══════════════════════════ */
 function showPage(id){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');p.style.display='none'});
-  var el=document.getElementById(id);el.style.display='block';
+  document.querySelectorAll('.page').forEach(function(p){
+    p.classList.remove('active');p.style.display='none';
+  });
+  var el=document.getElementById(id);
+  el.style.display='block';
   requestAnimationFrame(function(){el.classList.add('active')});
 }
 
-/* ── LOGIN ─────────────────────────────────────────────────── */
+/* ══ LOGIN ═══════════════════════════════════ */
 function doLogin(){
   var sid=document.getElementById('inp_sid').value.trim().toUpperCase();
   var tid=document.getElementById('inp_tid').value.trim();
-  var box=document.getElementById('loginAlert');
-  box.innerHTML='';
-  if(!sid||!tid){box.innerHTML='<div class="alert alert-danger">⚠️ Please enter both Student ID and Team ID.</div>';return}
+  var alertBox=document.getElementById('loginAlert');
+  alertBox.innerHTML='';
+  if(!sid||!tid){
+    alertBox.innerHTML='<div class="login-alert la-err">⚠️ Please enter both Student ID and Team ID.</div>';
+    return;
+  }
   var btn=document.getElementById('loginBtn');
   btn.disabled=true;
-  document.getElementById('btn_icon').textContent='⏳';
-  document.getElementById('btn_text').textContent='Verifying…';
+  document.getElementById('btn_ico').textContent='⏳';
+  document.getElementById('btn_txt').textContent='Verifying…';
 
-  callGAS('checkLogin', {studentID:sid, teamID:tid}, function(res){
-    btn.disabled=false;
-    document.getElementById('btn_icon').textContent='🔓';
-    document.getElementById('btn_text').textContent='View My Feedback';
+  callGAS('checkLogin',{studentID:sid,teamID:tid},function(res){
+    resetBtn();
     if(res.success){
-      box.innerHTML='<div class="alert alert-success">✅ Login successful! Loading your feedback…</div>';
-      setTimeout(function(){showPage('studentPage');loadStudentData(res.studentID)},550);
+      alertBox.innerHTML='<div class="login-alert la-ok">✅ Login successful! Loading…</div>';
+      setTimeout(function(){showPage('reportPage');loadData(res.studentID)},500);
     } else {
-      box.innerHTML='<div class="alert alert-danger">❌ '+res.message+'</div>';
+      alertBox.innerHTML='<div class="login-alert la-err">❌ '+res.message+'</div>';
     }
-  }, function(){
-    btn.disabled=false;
-    document.getElementById('btn_icon').textContent='🔓';
-    document.getElementById('btn_text').textContent='View My Feedback';
-    box.innerHTML='<div class="alert alert-danger">❌ Connection error. Please try again.</div>';
+  },function(){
+    resetBtn();
+    alertBox.innerHTML='<div class="login-alert la-err">❌ Connection error. Please try again.</div>';
   });
 }
+function resetBtn(){
+  var btn=document.getElementById('loginBtn');
+  btn.disabled=false;
+  document.getElementById('btn_ico').textContent='🔓';
+  document.getElementById('btn_txt').textContent='View My Feedback';
+}
 
-/* ── LOGOUT ────────────────────────────────────────────────── */
+/* ══ LOGOUT ══════════════════════════════════ */
 function doLogout(){
   document.getElementById('inp_sid').value='';
   document.getElementById('inp_tid').value='';
   document.getElementById('loginAlert').innerHTML='';
-  document.getElementById('fbFooter').style.display='none';
-  document.getElementById('fbContent').innerHTML='<div class="fb-card"><div class="spinner-wrap"><div class="spinner"></div><p style="color:var(--muted);font-size:.9rem">Loading your feedback…</p></div></div>';
+  document.getElementById('rp-footer').style.display='none';
+  document.getElementById('rp-body').innerHTML='<div class="fb-card"><div class="spinner-box"><div class="spinner"></div><p style="font-size:.88rem;color:var(--muted)">Loading your feedback…</p></div></div>';
+  document.getElementById('page2-content').innerHTML='';
   showPage('loginPage');
 }
 
-/* ── LOAD STUDENT DATA ─────────────────────────────────────── */
-function loadStudentData(sid){
-  callGAS('getStudentData', {studentID:sid}, function(res){
-    renderFeedback(res);
-  }, function(){
-    document.getElementById('fbContent').innerHTML='<div class="fb-card"><div style="padding:40px;text-align:center;color:var(--danger)">❌ Failed to load data. Please logout and try again.</div></div>';
+/* ══ LOAD DATA ═══════════════════════════════ */
+function loadData(sid){
+  callGAS('getStudentData',{studentID:sid},function(res){
+    renderAll(res);
+  },function(){
+    document.getElementById('rp-body').innerHTML='<div class="fb-card" style="padding:30px;text-align:center;color:var(--red2)">❌ Failed to load. Please logout and try again.</div>';
   });
 }
 
-/* ── CALL GAS API (fetch with CORS) ────────────────────────── */
-function callGAS(action, params, onSuccess, onError){
-  // Build URL: GAS_URL?action=xxx&param1=val1&...
-  var url = GAS_URL + '?action=' + encodeURIComponent(action);
+/* ══ GAS FETCH ═══════════════════════════════ */
+function callGAS(action,params,onOk,onErr){
+  var url=GAS_URL+'?action='+encodeURIComponent(action);
   Object.keys(params).forEach(function(k){
-    url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+    url+='&'+encodeURIComponent(k)+'='+encodeURIComponent(params[k]);
   });
-
-  fetch(url, {redirect:'follow'})
+  fetch(url,{redirect:'follow'})
     .then(function(r){return r.json()})
-    .then(function(data){onSuccess(data)})
-    .catch(function(err){console.error('GAS error:',err);onError(err)});
+    .then(function(d){onOk(d)})
+    .catch(function(e){console.error(e);onErr(e)});
 }
 
-/* ── PDF DOWNLOAD ──────────────────────────────────────────── */
-function downloadPDF(){
+/* ══ PDF / PRINT ══════════════════════════════ */
+function doPDF(){
   var now=new Date();
-  var dateStr=now.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
-  var timeStr=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('pdfDate').textContent='Generated on: '+dateStr+' at '+timeStr;
-  document.getElementById('sb_date').textContent=dateStr+' at '+timeStr;
+  var ds=now.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var ts=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('cv-date').textContent=ds+' at '+ts;
   window.print();
 }
 
-/* ── LEVEL BADGE ───────────────────────────────────────────── */
-function levelBadge(pct){
-  if(pct>=90)return{cls:'lv-outstanding',txt:'⭐ Outstanding'};
-  if(pct>=80)return{cls:'lv-excellent',  txt:'🥇 Excellent'};
-  if(pct>=70)return{cls:'lv-verygood',   txt:'👍 Very Good'};
-  if(pct>=60)return{cls:'lv-good',       txt:'✅ Good'};
-  if(pct>=45)return{cls:'lv-satisfactory',txt:'📝 Satisfactory'};
-  return           {cls:'lv-improve',    txt:'⚠️ Needs Improvement'};
+/* ══ LEVEL HELPERS ═══════════════════════════ */
+function levelInfo(pct){
+  if(pct>=90)return{pill:'lp-os',gp:'gp-os',lv:'Outstanding',grade:'O',stars:'★★★★★'};
+  if(pct>=80)return{pill:'lp-ex',gp:'gp-ex',lv:'Excellent',  grade:'A+',stars:'★★★★☆'};
+  if(pct>=70)return{pill:'lp-vg',gp:'gp-vg',lv:'Very Good',  grade:'A', stars:'★★★★☆'};
+  if(pct>=60)return{pill:'lp-gd',gp:'gp-gd',lv:'Good',       grade:'B+',stars:'★★★☆☆'};
+  if(pct>=45)return{pill:'lp-sa',gp:'gp-sa',lv:'Satisfactory',grade:'B',stars:'★★☆☆☆'};
+  return           {pill:'lp-ni',gp:'gp-ni',lv:'Needs Improvement',grade:'C',stars:'★☆☆☆☆'};
 }
+function avgPct(keys,fb){var s=0;keys.forEach(function(k){s+=fb[k].levelPct});return Math.round(s/keys.length)}
 
-/* ── RENDER FEEDBACK ───────────────────────────────────────── */
-function renderFeedback(d){
+/* ══ RENDER EVERYTHING ═══════════════════════ */
+function renderAll(d){
   if(!d.success){
-    document.getElementById('fbContent').innerHTML='<div class="fb-card"><div style="padding:40px;text-align:center;color:var(--danger)">❌ '+d.message+'</div></div>';
+    document.getElementById('rp-body').innerHTML='<div class="fb-card" style="padding:30px;text-align:center;color:var(--red2)">❌ '+d.message+'</div>';
     return;
   }
   var info=d.info, fb=d.feedback, perf=d.performance;
+  var now=new Date();
+  var ds=now.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var refID='RPT/'+info.studentID+'/'+now.getFullYear();
 
-  document.getElementById('sb_name').textContent=info.name;
-  document.getElementById('sb_sid').textContent=info.studentID;
-  document.getElementById('sb_dept').textContent=info.dept;
-  document.getElementById('sb_team').textContent=info.teamID;
-  document.getElementById('sb_venue').textContent=info.venue;
-  document.getElementById('sb_batch').textContent=info.batch;
-  document.getElementById('sb_perf').textContent=perf;
-  document.getElementById('sb_date').textContent=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  document.getElementById('cv-ref').textContent=refID;
 
-  document.getElementById('fbFooter').style.display='block';
-  document.getElementById('footerInfo').textContent='Batch: '+info.batch+'  ·  Venue: '+info.venue+'  ·  Team: '+info.teamID;
+  /* All 6 categories */
+  var cats=[
+    {key:'problem',       ico:'📋',name:'Problem Statement / Theme'},
+    {key:'methodology',   ico:'⚙️', name:'Methodology / Proposed Solution'},
+    {key:'pictorial',     ico:'🖼️', name:'Pictorial / Scientific Explanation'},
+    {key:'response',      ico:'💬',name:'Responding to Queries'},
+    {key:'determination', ico:'💪',name:'Determination / Confidence'},
+    {key:'communication', ico:'🗣️', name:'Communication'}
+  ];
 
-  var html='';
-  html+='<div class="s-bar">';
-  html+='<div class="s-avatar">👤</div>';
-  html+='<div class="s-meta"><h2>'+info.name+'</h2><div class="s-chips">';
-  html+='<span class="s-chip">🪪 '+info.studentID+'</span>';
-  html+='<span class="s-chip">🏫 '+info.dept+'</span>';
-  html+='<span class="s-chip">👥 '+info.teamID+'</span>';
-  html+='<span class="s-chip">📍 '+info.venue+'</span>';
-  html+='<span class="s-chip">🕐 '+info.batch+'</span>';
-  html+='</div></div>';
-  html+='<div class="perf-box"><div class="perf-lbl">Overall Performance</div><div class="perf-val">'+perf+'</div></div>';
-  html+='</div>';
+  var overallPct=avgPct(cats.map(function(c){return c.key}),fb);
+  var overallLv=levelInfo(overallPct);
 
-  html+='<div class="sec-title">Category I — Seminar Content &amp; Presentation</div>';
-  html+='<div class="fb-card">';
-  html+='<div class="fb-card-head"><span class="hico">📘</span><h3>Category I — Faculty Feedback</h3></div>';
-  html+='<div class="fb-card-body">';
-  [{key:'problem',name:'Problem Statement / Theme',ico:'📋'},
-   {key:'methodology',name:'Methodology / Proposed Solution',ico:'⚙️'},
-   {key:'pictorial',name:'Pictorial / Scientific Explanation',ico:'🖼️'},
-   {key:'response',name:'Responding to Queries',ico:'💬'}
-  ].forEach(function(c){html+=catBlock(c.ico,c.name,fb[c.key])});
-  html+='</div></div>';
+  /* ── PAGE 1 HTML ── */
+  var h='';
 
-  html+='<div class="sec-title">Category II — Personal &amp; Communication Skills</div>';
-  html+='<div class="fb-card">';
-  html+='<div class="fb-card-head"><span class="hico">📗</span><h3>Category II — Faculty Feedback</h3></div>';
-  html+='<div class="fb-card-body">';
-  [{key:'determination',name:'Determination / Confidence Level',ico:'💪'},
-   {key:'communication',name:'Communication',ico:'🗣️'}
-  ].forEach(function(c){html+=catBlock(c.ico,c.name,fb[c.key])});
-  html+='</div></div>';
+  /* Student card */
+  h+='<div class="stu-card">';
+  h+='<div class="stu-top">';
+  h+='<div class="stu-avatar">👤</div>';
+  h+='<div><div class="stu-name">'+info.name+'</div>';
+  h+='<div class="stu-chips">';
+  h+='<span class="stu-chip">🪪 '+info.studentID+'</span>';
+  h+='<span class="stu-chip">👥 '+info.teamID+'</span>';
+  h+='<span class="stu-chip">📍 '+info.venue+'</span>';
+  h+='<span class="stu-chip">🕐 '+info.batch+'</span>';
+  h+='</div></div></div>';
+  h+='<div class="stu-perf">';
+  h+='<div><div class="perf-lbl">Overall Performance</div><div class="perf-val">'+perf+'</div></div>';
+  h+='<span class="fb-level-pill '+overallLv.pill+'" style="font-size:.8rem;padding:5px 14px">'+overallLv.lv+'</span>';
+  h+='</div></div>';
 
-  document.getElementById('fbContent').innerHTML=html;
+  /* Category I */
+  h+=sectionHead('I','Category I — Seminar Content & Presentation');
+  h+=fbCard({ico:'📋',name:'Problem Statement / Theme'},     fb.problem);
+  h+=fbCard({ico:'⚙️', name:'Methodology / Proposed Solution'}, fb.methodology);
+  h+=fbCard({ico:'🖼️', name:'Pictorial / Scientific Explanation'}, fb.pictorial);
+  h+=fbCard({ico:'💬',name:'Responding to Queries'},         fb.response);
+
+  /* Category II */
+  h+=sectionHead('II','Category II — Personal & Communication Skills');
+  h+=fbCard({ico:'💪',name:'Determination / Confidence'},    fb.determination);
+  h+=fbCard({ico:'🗣️', name:'Communication'},                 fb.communication);
+
+  document.getElementById('rp-body').innerHTML=h;
+  document.getElementById('rp-footer').style.display='block';
+
+  /* ── PAGE 2 HTML ── */
+  var p2='';
+  p2+='<div class="p2-head">';
+  p2+='<div><div class="p2-head-title">Performance Report &amp; Submission Copy</div>';
+  p2+='<div class="p2-head-sub">Grading Overview &nbsp;·&nbsp; Mentor Acknowledgement Form</div></div>';
+  p2+='<div class="pnum">Page 2 of 2</div>';
+  p2+='</div>';
+
+  /* Grade table */
+  p2+='<div class="grade-wrap"><table class="grade-table">';
+  p2+='<thead><tr><th>Competency Area</th><th>Performance Level</th><th>Grade</th><th>Stars</th></tr></thead><tbody>';
+  cats.forEach(function(c){
+    var li=levelInfo(fb[c.key].levelPct);
+    p2+='<tr>'
+      +'<td style="font-weight:600">'+c.ico+' '+c.name+'</td>'
+      +'<td><span class="gp '+li.gp+'">'+li.lv+'</span></td>'
+      +'<td style="font-weight:800;color:#0b1628">'+li.grade+'</td>'
+      +'<td class="stars" style="font-size:8.5pt">'+li.stars+'</td>'
+      +'</tr>';
+  });
+  p2+='</tbody><tfoot><tr>';
+  p2+='<td>Overall / Composite</td>';
+  p2+='<td><span class="gp '+overallLv.gp+'">'+overallLv.lv+'</span></td>';
+  p2+='<td>'+overallLv.grade+'</td>';
+  p2+='<td class="stars">'+overallLv.stars+'</td>';
+  p2+='</tr></tfoot></table></div>';
+
+  /* Student details */
+  p2+='<div class="detail-table-wrap">';
+  p2+='<div class="detail-table-head">🎓 Student Details</div>';
+  p2+='<table class="detail-table">';
+  p2+='<tr><td class="dt-lbl">Student Name</td><td class="dt-val">'+info.name+'</td><td class="dt-lbl">Student ID</td><td class="dt-val">'+info.studentID+'</td></tr>';
+  p2+='<tr><td class="dt-lbl">Team ID</td><td class="dt-val">'+info.teamID+'</td><td class="dt-lbl">Venue / Panel</td><td class="dt-val">'+info.venue+'</td></tr>';
+  p2+='<tr><td class="dt-lbl">Batch</td><td class="dt-val">'+info.batch+'</td><td class="dt-lbl">Report Date</td><td class="dt-val">'+ds+'</td></tr>';
+  p2+='<tr><td class="dt-lbl">Overall Performance</td><td class="dt-val hl" colspan="3">'+perf+' &nbsp;·&nbsp; '+overallLv.lv+' &nbsp;·&nbsp; Grade: '+overallLv.grade+'</td></tr>';
+  p2+='</table></div>';
+
+  /* Signatures */
+  p2+='<div class="sig-wrap">';
+  p2+='<div class="sig-head">✍️ Acknowledgement &amp; Signatures</div>';
+  p2+='<table class="sig-table">';
+  p2+='<tr><td class="sig-lbl">Student Signature</td><td class="sig-line">Sign above</td><td class="sig-lbl">Date</td><td class="sig-line"></td></tr>';
+  p2+='<tr><td class="sig-lbl">Mentor / Advisor Signature</td><td class="sig-line">Sign above</td><td class="sig-lbl">Submission Date</td><td class="sig-line"></td></tr>';
+  p2+='<tr><td class="sig-lbl">Mentor Remarks</td><td class="remarks" colspan="3">Write remarks here</td></tr>';
+  p2+='</table></div>';
+
+  p2+='<div class="notice"><strong>★ Instructions:</strong> Print this 2-page report, sign Page 2, and submit to your Mentor / Class Advisor for acknowledgement and record-keeping. This report is valid for academic records and seminar portfolio documentation.</div>';
+
+  p2+='<div class="p2-footer">';
+  p2+='<span>📋 Seminar Performance Feedback System &nbsp;·&nbsp; Mentor Submission Copy</span>';
+  p2+='<span class="pnum">Page 2 of 2</span>';
+  p2+='</div>';
+
+  document.getElementById('page2-content').innerHTML=p2;
 }
 
-function catBlock(ico,name,f){
-  var lv=levelBadge(f.levelPct);
-  return '<div class="cat-sub">'
-    +'<div class="cat-top">'
-    +'<div class="cat-name"><span class="ico">'+ico+'</span>'+name+'</div>'
-    +'<span class="level-badge '+lv.cls+'">'+lv.txt+'</span>'
+/* ══ HELPERS ══════════════════════════════ */
+function sectionHead(num,txt){
+  return '<div class="sec-head"><div class="sec-head-num">'+num+'</div>'
+    +'<div class="sec-head-txt">'+txt+'</div>'
+    +'<div class="sec-head-line"></div></div>';
+}
+function fbCard(cat,f){
+  var li=levelInfo(f.levelPct);
+  return '<div class="fb-card">'
+    +'<div class="fb-card-head">'
+    +'<div class="fb-head-left"><span class="fb-head-icon">'+cat.ico+'</span><span class="fb-head-name">'+cat.name+'</span></div>'
+    +'<span class="fb-level-pill '+li.pill+'">'+li.lv+'</span>'
     +'</div>'
     +'<div class="fb-grid">'
-    +fbRow('comment','💬 Comment',f.comment)
-    +fbRow('problem','⚠️ Problem',f.problem)
-    +fbRow('suggest','✅ Suggestion',f.suggestion)
-    +fbRow('motivate','🌟 Motivation',f.motivation)
+    +'<div class="fb-cell c-comment"><div class="fb-cell-tag t-comment">💬 Comment</div><div class="fb-cell-text">'+f.comment+'</div></div>'
+    +'<div class="fb-cell c-problem"><div class="fb-cell-tag t-problem">⚠️ Problem</div><div class="fb-cell-text">'+f.problem+'</div></div>'
+    +'<div class="fb-cell c-suggest"><div class="fb-cell-tag t-suggest">✅ Suggestion</div><div class="fb-cell-text">'+f.suggestion+'</div></div>'
+    +'<div class="fb-cell c-motivate"><div class="fb-cell-tag t-motivate">🌟 Motivation</div><div class="fb-cell-text">'+f.motivation+'</div></div>'
     +'</div></div>';
 }
-function fbRow(type,label,text){
-  return '<div class="fb-row t-'+type+'"><span class="fb-tag t-'+type+'">'+label+'</span><div class="fb-text">'+text+'</div></div>';
-}
 
+/* ══ INIT ═════════════════════════════════ */
 showPage('loginPage');
 </script>
 </body>
