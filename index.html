@@ -287,48 +287,113 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
 
 .rp-footer{text-align:center;font-size:.7rem;color:var(--muted);padding:16px;border-top:1px solid var(--border);margin-top:8px}
 
-/* ─── PRINT / PDF ──────────────────────────────────── */
+/* ─── PRINT / PDF — STRICT 2-PAGE A4 ──────────────── */
 @media print{
-  @page{size:A4;margin:11mm 12mm}
+  @page{size:A4;margin:8mm 10mm}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  body{background:#fff!important;font-size:9.5pt}
 
-  /* hide screen-only elements */
+  /* ── Hide all screen-only UI ── */
   .rp-header,.no-print,.rp-footer{display:none!important}
   #loginPage{display:none!important}
   #reportPage{display:block!important;min-height:0!important}
   .rp-body{padding:0!important;max-width:100%!important;margin:0!important}
 
-  /* PDF cover */
+  /* ── Base font tighter for print ── */
+  body{background:#fff!important;font-family:'Sora',sans-serif;font-size:7.8pt;color:#0f172a}
+
+  /* ── PDF cover visible in print ── */
   #pdf-cover{display:flex!important}
+  #pdf-cover{padding:5px 0 8px!important;margin-bottom:7px!important}
+  #pdf-cover .cv-title{font-size:11pt!important}
+  #pdf-cover .cv-sub{font-size:7pt!important}
+  #pdf-cover .cv-meta{font-size:6.5pt!important;line-height:1.7!important}
+  #pdf-cover .cv-logo{width:38px!important;height:38px!important;font-size:17px!important}
 
-  /* Page 1 content */
-  .stu-card{border-radius:6px!important;padding:14px!important;margin-bottom:10px!important;page-break-inside:avoid}
-  .sec-head{margin:10px 0 8px!important}
-  .fb-card{margin-bottom:8px!important;border-radius:5px!important;page-break-inside:avoid;box-shadow:none!important;border:1px solid #bcc6e0!important}
-  .fb-card-head{padding:7px 12px!important}
-  .fb-head-name{font-size:8.5pt!important}
-  .fb-cell{padding:8px 10px!important}
-  .fb-cell-text{font-size:7.5pt!important;line-height:1.45!important}
-  .fb-cell-tag{font-size:.58rem!important}
-  .fb-level-pill{font-size:6.5pt!important;padding:2px 8px!important}
-  .sec-head-txt{font-size:7.5pt!important}
-  .stu-name{font-size:.95rem!important}
-  .stu-chip{font-size:.62rem!important}
+  /* ── Student card ── */
+  .stu-card{
+    border-radius:5px!important;padding:9px 13px!important;
+    margin-bottom:7px!important;
+    page-break-inside:avoid;
+  }
+  .stu-top{gap:9px!important;margin-bottom:8px!important}
+  .stu-avatar{width:38px!important;height:38px!important;font-size:16px!important}
+  .stu-name{font-size:.88rem!important}
+  .stu-chips{gap:4px!important;margin-top:4px!important}
+  .stu-chip{font-size:.58rem!important;padding:2px 8px!important}
+  .stu-perf{padding:7px 11px!important}
+  .perf-lbl{font-size:.58rem!important}
+  .perf-val{font-size:.95rem!important}
+  .fb-level-pill{font-size:6pt!important;padding:2px 8px!important}
 
-  /* Page break before page 2 */
+  /* ── Section headings ── */
+  .sec-head{margin:6px 0 5px!important}
+  .sec-head-num{width:20px!important;height:20px!important;font-size:6.5pt!important;border-radius:5px!important}
+  .sec-head-txt{font-size:6.8pt!important;letter-spacing:.6px!important}
+
+  /* ── Feedback cards ── */
+  .fb-card{
+    margin-bottom:5px!important;
+    border-radius:4px!important;
+    page-break-inside:avoid;
+    box-shadow:none!important;
+    border:1px solid #c8d3ea!important;
+  }
+  .fb-card-head{padding:5px 10px!important}
+  .fb-head-icon{font-size:.8rem!important}
+  .fb-head-name{font-size:7.5pt!important;font-weight:700!important}
+
+  /* ── 2-col grid always in print ── */
+  .fb-grid{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:0!important;
+  }
+  .fb-cell{padding:5px 8px!important;border-right:1px solid #dde3f0!important;border-bottom:1px solid #dde3f0!important}
+  .fb-cell:nth-child(2n){border-right:none!important}
+  .fb-cell:nth-last-child(-n+2){border-bottom:none!important}
+  /* top accent borders */
+  .fb-cell.c-comment{border-top:2px solid #3b82f6!important}
+  .fb-cell.c-problem{border-top:2px solid #ef4444!important}
+  .fb-cell.c-suggest{border-top:2px solid #10b981!important}
+  .fb-cell.c-motivate{border-top:2px solid #f59e0b!important}
+
+  .fb-cell-tag{font-size:5.8pt!important;margin-bottom:3px!important}
+  .fb-cell-text{font-size:6.8pt!important;line-height:1.38!important}
+
+  /* ── PAGE 2: forced new page ── */
   #page2-content{
     display:block!important;
     page-break-before:always;
     margin-top:0!important;
   }
 
-  .sig-table td,.grade-table td,.grade-table th{font-size:8pt!important;padding:7px 10px!important}
+  /* ── Page 2 elements ── */
+  .p2-head{border-radius:5px!important;padding:8px 14px!important;margin-bottom:10px!important}
+  .p2-head-title{font-size:9pt!important}
+  .p2-head-sub{font-size:6.5pt!important}
 
-  /* keep fb-grid 2 col in print */
-  .fb-grid{grid-template-columns:1fr 1fr!important}
-  .fb-cell:nth-child(2n){border-right:none!important}
-  .fb-cell:nth-last-child(-n+2){border-bottom:none!important}
+  .grade-wrap{margin-bottom:10px!important;border-radius:5px!important}
+  .grade-table th{padding:6px 10px!important;font-size:7pt!important}
+  .grade-table td{padding:6px 10px!important;font-size:7.5pt!important}
+  .grade-table tfoot td{font-size:8pt!important;padding:7px 10px!important}
+  .gp{font-size:6.5pt!important;padding:2px 9px!important}
+  .stars{font-size:7pt!important}
+
+  .detail-table-wrap{margin-bottom:10px!important;border-radius:5px!important}
+  .detail-table-head{padding:6px 12px!important;font-size:7pt!important}
+  .detail-table td{padding:6px 11px!important;font-size:7.5pt!important}
+  .dt-val.hl{font-size:8.5pt!important}
+
+  .sig-wrap{margin-bottom:10px!important;border-radius:5px!important}
+  .sig-head{padding:6px 12px!important;font-size:7pt!important}
+  .sig-table td{padding:6px 11px!important;font-size:7.5pt!important}
+  .sig-table td.sig-line{height:42px!important}
+  .sig-table td.remarks{height:46px!important}
+
+  .notice{padding:7px 12px!important;font-size:6.8pt!important;margin-bottom:8px!important;border-radius:5px!important}
+
+  .p2-footer{padding:5px 0!important;font-size:6.5pt!important}
+  .pnum{font-size:6pt!important;padding:2px 7px!important}
 }
 
 /* ─── PDF COVER (screen: hidden; print: visible) ───── */
