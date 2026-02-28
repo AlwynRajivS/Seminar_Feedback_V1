@@ -1,0 +1,603 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Seminar Performance Feedback System</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0b1d3a;--navy-mid:#122952;--blue:#1a4fa0;--blue-light:#2563eb;
+  --accent:#f59e0b;--accent2:#fbbf24;--success:#059669;--danger:#dc2626;
+  --bg:#eef2fb;--surface:#fff;--s2:#f5f8ff;--border:#d4ddf5;
+  --text:#0f172a;--muted:#64748b;
+  --sh-sm:0 1px 4px rgba(11,29,58,.10);--sh-md:0 4px 24px rgba(11,29,58,.13);--sh-lg:0 12px 48px rgba(11,29,58,.20);
+  --r:14px;--rl:20px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+.page{display:none}
+.page.active{display:block;animation:fadeUp .45s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* LOGIN */
+#loginPage{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(150deg,#060f22 0%,#0d1f45 38%,#112248 65%,#1a4fa0 100%);padding:20px;position:relative;overflow:hidden}
+#loginPage::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 75% 55% at 72% 18%,rgba(59,130,246,.13) 0%,transparent 65%),radial-gradient(ellipse 45% 45% at 18% 82%,rgba(245,158,11,.08) 0%,transparent 60%);pointer-events:none}
+#loginPage::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.055) 1px,transparent 1px);background-size:36px 36px;pointer-events:none}
+.login-card{background:#fff;border-radius:24px;box-shadow:0 36px 90px rgba(0,0,0,.45);width:100%;max-width:440px;overflow:hidden;position:relative;z-index:1}
+.login-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 55%,var(--blue-light) 100%);padding:40px 30px 32px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.login-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.09) 0%,transparent 70%);border-radius:50%}
+.login-hero::after{content:'';position:absolute;bottom:-35px;left:-35px;width:130px;height:130px;background:radial-gradient(circle,rgba(245,158,11,.14) 0%,transparent 70%);border-radius:50%}
+.crest{font-size:54px;line-height:1;display:block;margin-bottom:12px;position:relative;z-index:1}
+.login-hero h1{font-size:1.2rem;font-weight:800;letter-spacing:-.3px;line-height:1.35;position:relative;z-index:1}
+.login-hero p{font-size:.79rem;opacity:.72;margin-top:5px;position:relative;z-index:1}
+.badge-row{display:flex;justify-content:center;gap:8px;margin-top:13px;position:relative;z-index:1}
+.h-badge{background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.28);color:#fff;font-size:.67rem;font-weight:700;padding:3px 12px;border-radius:99px;text-transform:uppercase;letter-spacing:.5px}
+.login-body{padding:30px 28px 24px}
+.form-group{margin-bottom:20px}
+.form-label{display:flex;align-items:center;gap:7px;font-size:.77rem;font-weight:800;color:var(--navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:.6px}
+.form-input{width:100%;padding:13px 16px;border:2px solid var(--border);border-radius:11px;font-family:'Outfit',sans-serif;font-size:.96rem;font-weight:600;color:var(--text);background:var(--s2);outline:none;transition:border-color .2s,box-shadow .2s,background .2s;letter-spacing:.3px}
+.form-input:focus{border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(37,99,235,.13);background:#fff}
+.form-input::placeholder{color:#b2bdd6;font-weight:400;font-size:.87rem;letter-spacing:0}
+.input-hint{font-size:.71rem;color:var(--muted);margin-top:4px;padding-left:2px}
+.btn-login{width:100%;padding:14px;background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 50%,var(--blue-light) 100%);color:#fff;border:none;border-radius:11px;font-family:'Outfit',sans-serif;font-size:.97rem;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 5px 18px rgba(26,79,160,.38);display:flex;align-items:center;justify-content:center;gap:9px}
+.btn-login:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 9px 28px rgba(26,79,160,.44)}
+.btn-login:disabled{opacity:.62;cursor:not-allowed;transform:none}
+.alert{padding:12px 15px;border-radius:10px;font-size:.84rem;font-weight:600;margin-top:14px;display:flex;align-items:center;gap:9px;animation:fadeUp .3s ease}
+.alert-danger{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.alert-success{background:#f0fdf4;color:#065f46;border:1px solid #a7f3d0}
+.login-foot{text-align:center;font-size:.72rem;color:var(--muted);border-top:1px solid var(--border);padding:14px 28px;line-height:1.75}
+
+/* STUDENT PAGE */
+.app-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 50%,var(--blue) 100%);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 3px 22px rgba(0,0,0,.3)}
+.header-inner{max-width:1060px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:14px}
+.h-logo{width:46px;height:46px;flex-shrink:0;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.28);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.h-title h1{font-size:clamp(.85rem,2vw,1.08rem);font-weight:800;letter-spacing:-.3px}
+.h-title p{font-size:.7rem;opacity:.68;margin-top:2px}
+.h-right{margin-left:auto;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.ro-badge{background:var(--accent);color:#1c0500;font-size:.63rem;font-weight:800;padding:3px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
+.btn-action{background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.3);color:#fff;padding:7px 14px;border-radius:99px;font-size:.76rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background .2s}
+.btn-action:hover{background:rgba(255,255,255,.22)}
+.btn-pdf{background:rgba(245,158,11,.28);border-color:rgba(245,158,11,.65);color:#fef3c7}
+.btn-pdf:hover{background:rgba(245,158,11,.42)}
+.main-wrap{max-width:1060px;margin:0 auto;padding:26px 18px 70px}
+
+/* Student bar */
+.s-bar{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);border-radius:var(--rl);padding:22px 26px;color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin-bottom:24px;box-shadow:var(--sh-lg);position:relative;overflow:hidden}
+.s-bar::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.07) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.s-avatar{width:58px;height:58px;flex-shrink:0;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px}
+.s-meta h2{font-size:1.2rem;font-weight:800;letter-spacing:-.3px}
+.s-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}
+.s-chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:3px 12px;font-size:.72rem;font-weight:600}
+.perf-box{margin-left:auto;flex-shrink:0;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.25);border-radius:14px;padding:13px 20px;text-align:center}
+.perf-lbl{font-size:.66rem;opacity:.72;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.perf-val{font-size:1.1rem;font-weight:800;color:var(--accent2);line-height:1.2}
+
+/* Section title */
+.sec-title{display:flex;align-items:center;gap:10px;font-size:.71rem;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;color:var(--navy);margin-bottom:14px}
+.sec-title::before{content:'';width:4px;height:18px;background:var(--accent);border-radius:99px;flex-shrink:0}
+
+/* Feedback card */
+.fb-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh-sm);margin-bottom:20px}
+.fb-card-head{background:linear-gradient(90deg,var(--navy) 0%,var(--blue) 100%);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:11px}
+.fb-card-head .hico{font-size:20px}
+.fb-card-head h3{font-size:.95rem;font-weight:700;letter-spacing:-.2px}
+.fb-card-body{padding:22px}
+
+/* Category sub */
+.cat-sub{margin-bottom:26px;padding-bottom:26px;border-bottom:2px dashed var(--border)}
+.cat-sub:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.cat-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.cat-name{display:flex;align-items:center;gap:8px;font-size:.96rem;font-weight:800;color:var(--navy)}
+.cat-name .ico{font-size:1.1rem}
+
+/* LEVEL BADGE */
+.level-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:99px;font-size:.78rem;font-weight:800;letter-spacing:.3px;border:2px solid;white-space:nowrap}
+.lv-outstanding{background:#ecfdf5;color:#065f46;border-color:#059669}
+.lv-excellent{background:#eff6ff;color:#1e40af;border-color:#2563eb}
+.lv-verygood{background:#f0f9ff;color:#075985;border-color:#0284c7}
+.lv-good{background:#fffbeb;color:#92400e;border-color:#d97706}
+.lv-satisfactory{background:#fff7ed;color:#9a3412;border-color:#ea580c}
+.lv-improve{background:#fef2f2;color:#991b1b;border-color:#dc2626}
+
+/* Feedback grid */
+.fb-grid{display:grid;gap:11px;grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}
+.fb-row{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:14px 15px;display:flex;flex-direction:column;gap:7px;transition:box-shadow .2s,transform .2s}
+.fb-row:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.fb-row.t-comment{border-left:4px solid #3b82f6}
+.fb-row.t-problem{border-left:4px solid #ef4444}
+.fb-row.t-suggest{border-left:4px solid #10b981}
+.fb-row.t-motivate{border-left:4px solid #f59e0b}
+.fb-tag{display:inline-flex;align-items:center;gap:5px;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:2px 10px;border-radius:99px;align-self:flex-start}
+.fb-tag.t-comment{background:#eff6ff;color:#1d4ed8}
+.fb-tag.t-problem{background:#fef2f2;color:#b91c1c}
+.fb-tag.t-suggest{background:#f0fdf4;color:#065f46}
+.fb-tag.t-motivate{background:#fffbeb;color:#92400e}
+.fb-text{font-size:.87rem;line-height:1.65;color:var(--text)}
+
+/* Spinner */
+.spinner-wrap{display:flex;flex-direction:column;align-items:center;padding:70px;gap:18px}
+.spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--blue-light);border-radius:50%;animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.page-footer{text-align:center;padding:20px;font-size:.73rem;color:var(--muted);border-top:1px solid var(--border);margin-top:10px;line-height:1.8}
+
+/* ══ PDF / PRINT — STRICT 2-PAGE LAYOUT ════════════════════
+   PAGE 1 : Report header + student info + all feedback cards
+   PAGE 2 : Mentor submission & signature table ONLY
+══════════════════════════════════════════════════════════ */
+@media print{
+  @page{size:A4;margin:12mm 13mm}
+
+  /* hide all screen-only UI */
+  .app-header,.h-right,.btn-action,.btn-pdf,.ro-badge,
+  .page-footer,#logoutBtn,#pdfBtn,#loginPage{display:none!important}
+  .page.active{animation:none!important}
+
+  body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:9.5pt;color:#0f172a}
+
+  /* ── PAGE 1 wrapper ─────────────────────────────── */
+  #page1{display:block!important}
+
+  /* PDF report header (page 1 top) */
+  #pdfCover{
+    display:block!important;
+    text-align:center;
+    padding:8px 0 12px;
+    margin-bottom:12px;
+    border-bottom:3px solid #0b1d3a;
+  }
+
+  .main-wrap{padding:0!important;max-width:100%!important;margin:0!important}
+
+  /* Student info bar */
+  .s-bar{
+    background:#0b1d3a!important;
+    border-radius:6px!important;
+    padding:12px 16px!important;
+    margin-bottom:10px!important;
+    page-break-inside:avoid;
+  }
+  .s-bar *{color:#fff!important}
+  .perf-box{background:#1e3a6a!important;border-color:rgba(255,255,255,.3)!important}
+
+  /* Section titles */
+  .sec-title{font-size:8pt!important;margin-bottom:7px!important;margin-top:10px!important}
+
+  /* Feedback cards */
+  .fb-card{
+    box-shadow:none!important;border:1px solid #bbb!important;
+    border-radius:6px!important;margin-bottom:9px!important;
+    page-break-inside:avoid;
+  }
+  .fb-card-head{
+    background:#1a4fa0!important;
+    padding:8px 14px!important;
+  }
+  .fb-card-head h3{font-size:9pt!important}
+  .fb-card-body{padding:10px 12px!important}
+
+  /* Category sub-sections */
+  .cat-sub{
+    margin-bottom:10px!important;
+    padding-bottom:10px!important;
+    page-break-inside:avoid;
+  }
+  .cat-sub:last-child{border-bottom:none!important}
+  .cat-top{margin-bottom:8px!important}
+  .cat-name{font-size:8.5pt!important}
+  .level-badge{font-size:7pt!important;padding:2px 9px!important}
+
+  /* Feedback grid — 2 columns in print */
+  .fb-grid{grid-template-columns:repeat(2,1fr)!important;gap:6px!important}
+  .fb-row{padding:7px 9px!important;border-radius:5px!important}
+  .fb-row:hover{transform:none!important;box-shadow:none!important}
+  .fb-tag{font-size:.6rem!important;padding:1px 7px!important}
+  .fb-text{font-size:8pt!important;line-height:1.45!important}
+
+  /* ── PAGE BREAK before page 2 ───────────────────── */
+  #submitBox{
+    display:block!important;
+    page-break-before:always; /* ← forces PAGE 2 start */
+    margin-top:0!important;
+    border:2px solid #0b1d3a;
+    border-radius:0;
+  }
+}
+
+/* PDF cover header — page 1 top, hidden on screen */
+#pdfCover{
+  display:none;
+  text-align:center;
+  padding:8px 0 14px;
+  margin-bottom:14px;
+  border-bottom:3px solid #0b1d3a;
+}
+#pdfCover .inst{font-size:13pt;font-weight:800;color:#0b1d3a;letter-spacing:.5px;text-transform:uppercase}
+#pdfCover .subtitle{font-size:9pt;color:#334155;margin-top:4px}
+#pdfCover .gendate{font-size:7.5pt;color:#64748b;margin-top:5px}
+
+/* Submit/signature box — page 2, hidden on screen */
+#submitBox{
+  display:none;
+  border:2px solid #0b1d3a;
+  overflow:hidden;
+}
+#submitBox .sb-head{
+  background:#0b1d3a;color:#fff;
+  padding:12px 20px;
+  font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+  text-align:center;
+}
+#submitBox .sb-subhead{
+  background:#1a4fa0;color:#fff;
+  padding:7px 20px;
+  font-size:8.5pt;font-weight:600;
+  text-align:center;letter-spacing:.2px;
+}
+#submitBox .sb-section-title{
+  background:#f0f4ff;color:#0b1d3a;
+  padding:7px 16px;
+  font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:.6px;
+  border-top:1px solid #d4ddf5;border-bottom:1px solid #d4ddf5;
+}
+#submitBox table{width:100%;border-collapse:collapse;font-size:9.5pt}
+#submitBox td{padding:9px 16px;border:1px solid #d4ddf5;vertical-align:middle}
+#submitBox td.lbl{font-weight:700;color:#0b1d3a;width:36%;background:#f5f8ff}
+#submitBox td.val{font-weight:500;color:#1e293b}
+#submitBox td.val.highlight{font-weight:800;color:#0b1d3a;font-size:10.5pt}
+#submitBox .sig-row td{height:52px;vertical-align:bottom;padding-bottom:6px;font-size:8pt;color:#64748b}
+#submitBox .sig-row td.lbl{vertical-align:middle}
+#submitBox .sig-note{
+  font-size:7.5pt;color:#475569;
+  padding:9px 16px;
+  border-top:2px solid #0b1d3a;
+  background:#f0f4ff;
+  font-style:italic;
+  text-align:center;
+}
+
+@media(max-width:640px){
+  .header-inner{padding:12px 14px}.main-wrap{padding:14px 11px 60px}
+  .s-bar{padding:16px}.fb-card-body{padding:15px}
+  .fb-grid{grid-template-columns:1fr}.login-body{padding:22px 20px 20px}
+  .login-hero{padding:30px 20px 26px}.ro-badge{display:none}
+  .perf-box{margin-left:0;width:100%}.cat-top{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="page active">
+<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(150deg,#060f22 0%,#0d1f45 38%,#112248 65%,#1a4fa0 100%);padding:20px;position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.055) 1px,transparent 1px);background-size:36px 36px;pointer-events:none"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 75% 55% at 72% 18%,rgba(59,130,246,.13) 0%,transparent 65%),radial-gradient(ellipse 45% 45% at 18% 82%,rgba(245,158,11,.08) 0%,transparent 60%);pointer-events:none"></div>
+  <div class="login-card" style="position:relative;z-index:1">
+    <div class="login-hero">
+      <span class="crest">🎓</span>
+      <h1>Seminar Performance<br>Feedback System</h1>
+      <p>Higher Semester Seminar Day &nbsp;·&nbsp; Student Portal</p>
+      <div class="badge-row">
+        <span class="h-badge">🔒 Read Only</span>
+        <span class="h-badge">📋 Feedback Report</span>
+      </div>
+    </div>
+    <div class="login-body">
+      <div class="form-group">
+        <label class="form-label"><span>🪪</span> Student ID</label>
+        <input id="inp_sid" class="form-input" type="text" placeholder="e.g.  24UAD001" autocomplete="off"
+          oninput="this.value=this.value.toUpperCase()"
+          onkeydown="if(event.key==='Enter')document.getElementById('inp_tid').focus()"/>
+        <div class="input-hint">Enter your registered Student ID</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><span>🔑</span> Team ID &nbsp;<small style="font-weight:400;text-transform:none;letter-spacing:0;color:#94a3b8;font-size:.73rem">(Password)</small></label>
+        <input id="inp_tid" class="form-input" type="password" placeholder="e.g.  ADS_B_01"
+          onkeydown="if(event.key==='Enter')doLogin()"/>
+        <div class="input-hint">Your Team ID acts as your password</div>
+      </div>
+      <button class="btn-login" id="loginBtn" onclick="doLogin()">
+        <span id="btn_icon">🔓</span><span id="btn_text">View My Feedback</span>
+      </button>
+      <div id="loginAlert"></div>
+    </div>
+    <div class="login-foot">
+      Use your <strong>Student ID</strong> as username &amp; <strong>Team ID</strong> as password<br>
+      Read-only portal — no data can be modified
+    </div>
+  </div>
+  <p style="color:rgba(255,255,255,.32);font-size:.7rem;margin-top:20px;text-align:center;position:relative;z-index:1">© Seminar Feedback System &nbsp;·&nbsp; Powered by Google Sheets</p>
+</div>
+</div>
+
+<!-- STUDENT PAGE -->
+<div id="studentPage" class="page">
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="h-logo">🎓</div>
+      <div class="h-title">
+        <h1>Seminar Performance Feedback System</h1>
+        <p>Higher Semester Seminar Day &nbsp;·&nbsp; Student Feedback Report</p>
+      </div>
+      <div class="h-right">
+        <span class="ro-badge">Read Only</span>
+        <button class="btn-action btn-pdf" id="pdfBtn" onclick="downloadPDF()">📥 Download PDF</button>
+        <button class="btn-action" id="logoutBtn" onclick="doLogout()">🚪 Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PDF-only cover header -->
+  <div id="pdfCover">
+    <div class="inst">SEMINAR PERFORMANCE FEEDBACK REPORT</div>
+    <div class="subtitle">Higher Semester Seminar Day &nbsp;|&nbsp; Student Feedback Report</div>
+    <div class="gendate" id="pdfDate"></div>
+  </div>
+
+  <div class="main-wrap" id="fbContent">
+    <div class="fb-card">
+      <div class="spinner-wrap">
+        <div class="spinner"></div>
+        <p style="color:var(--muted);font-size:.9rem">Loading your feedback…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       PDF PAGE 2 — Mentor Submission & Signature Table
+       Hidden on screen, appears as page 2 in print/PDF
+  ════════════════════════════════════════════════════ -->
+  <div id="submitBox">
+    <div class="sb-head">📌 Seminar Performance Feedback — Mentor Submission Copy</div>
+    <div class="sb-subhead">Higher Semester Seminar Day &nbsp;·&nbsp; Student Acknowledgement Form</div>
+
+    <!-- Student Details -->
+    <div class="sb-section-title">🎓 Student Details</div>
+    <table>
+      <tr><td class="lbl">Student Name</td><td class="val" id="sb_name"></td><td class="lbl">Student ID</td><td class="val" id="sb_sid"></td></tr>
+      <tr><td class="lbl">Department</td><td class="val" id="sb_dept"></td><td class="lbl">Team ID</td><td class="val" id="sb_team"></td></tr>
+      <tr><td class="lbl">Venue / Panel</td><td class="val" id="sb_venue"></td><td class="lbl">Batch</td><td class="val" id="sb_batch"></td></tr>
+      <tr><td class="lbl">Overall Performance</td><td class="val highlight" colspan="3" id="sb_perf"></td></tr>
+    </table>
+
+    <!-- Feedback Summary -->
+    <div class="sb-section-title">📋 Feedback Summary</div>
+    <table>
+      <tr>
+        <td class="lbl">Category I</td>
+        <td class="val">
+          Problem Statement &nbsp;·&nbsp; Methodology &nbsp;·&nbsp;
+          Pictorial / Scientific &nbsp;·&nbsp; Responding to Queries
+        </td>
+      </tr>
+      <tr>
+        <td class="lbl">Category II</td>
+        <td class="val">Determination / Confidence &nbsp;·&nbsp; Communication</td>
+      </tr>
+      <tr>
+        <td class="lbl">Report Date</td>
+        <td class="val" id="sb_date"></td>
+      </tr>
+    </table>
+
+    <!-- Signatures -->
+    <div class="sb-section-title">✍️ Signatures &amp; Acknowledgement</div>
+    <table>
+      <tr class="sig-row">
+        <td class="lbl">Student Signature</td>
+        <td style="height:55px;border:1px solid #d4ddf5"></td>
+        <td class="lbl">Date</td>
+        <td style="height:55px;border:1px solid #d4ddf5"></td>
+      </tr>
+      <tr class="sig-row">
+        <td class="lbl">Mentor / Class Advisor<br>Signature</td>
+        <td style="height:55px;border:1px solid #d4ddf5"></td>
+        <td class="lbl">Date of Submission</td>
+        <td style="height:55px;border:1px solid #d4ddf5"></td>
+      </tr>
+      <tr class="sig-row">
+        <td class="lbl">Mentor Remarks</td>
+        <td colspan="3" style="height:60px;border:1px solid #d4ddf5"></td>
+      </tr>
+    </table>
+
+    <div class="sig-note">
+      ★ Student must print this report, sign it, and submit to their Mentor / Class Advisor for acknowledgement and record-keeping.
+    </div>
+  </div>
+
+  <div class="page-footer" id="fbFooter" style="display:none">
+    📋 Read-only feedback report &nbsp;·&nbsp; For concerns, contact your faculty coordinator<br>
+    <span id="footerInfo"></span>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   ⚙️  STEP 1 — PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+   ──────────────────────────────────────────────────────────
+   After deploying Code.gs as a Web App in Google Apps Script,
+   copy the URL (looks like below) and replace the placeholder.
+
+   Example:
+   https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec
+
+   ⚠️  Make sure deployment settings are:
+       Execute as  → Me
+       Who can access → Anyone
+════════════════════════════════════════════════════════════ */
+var GAS_URL = "https://script.google.com/macros/s/AKfycbyx7EJzl7xeJ6d9gsJwVH1pXYzhaUYYWrwP7wW0VnBqZcFSIbmsPhheudWVtUwNrgc/exec";
+//            ↑↑↑  ONLY THIS LINE NEEDS TO BE CHANGED  ↑↑↑
+
+/* ════════════════════════════════════════════════════════════
+   Everything below is automatic — do not change
+════════════════════════════════════════════════════════════ */
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');p.style.display='none'});
+  var el=document.getElementById(id);el.style.display='block';
+  requestAnimationFrame(function(){el.classList.add('active')});
+}
+
+/* ── LOGIN ─────────────────────────────────────────────────── */
+function doLogin(){
+  var sid=document.getElementById('inp_sid').value.trim().toUpperCase();
+  var tid=document.getElementById('inp_tid').value.trim();
+  var box=document.getElementById('loginAlert');
+  box.innerHTML='';
+  if(!sid||!tid){box.innerHTML='<div class="alert alert-danger">⚠️ Please enter both Student ID and Team ID.</div>';return}
+  var btn=document.getElementById('loginBtn');
+  btn.disabled=true;
+  document.getElementById('btn_icon').textContent='⏳';
+  document.getElementById('btn_text').textContent='Verifying…';
+
+  callGAS('checkLogin', {studentID:sid, teamID:tid}, function(res){
+    btn.disabled=false;
+    document.getElementById('btn_icon').textContent='🔓';
+    document.getElementById('btn_text').textContent='View My Feedback';
+    if(res.success){
+      box.innerHTML='<div class="alert alert-success">✅ Login successful! Loading your feedback…</div>';
+      setTimeout(function(){showPage('studentPage');loadStudentData(res.studentID)},550);
+    } else {
+      box.innerHTML='<div class="alert alert-danger">❌ '+res.message+'</div>';
+    }
+  }, function(){
+    btn.disabled=false;
+    document.getElementById('btn_icon').textContent='🔓';
+    document.getElementById('btn_text').textContent='View My Feedback';
+    box.innerHTML='<div class="alert alert-danger">❌ Connection error. Please try again.</div>';
+  });
+}
+
+/* ── LOGOUT ────────────────────────────────────────────────── */
+function doLogout(){
+  document.getElementById('inp_sid').value='';
+  document.getElementById('inp_tid').value='';
+  document.getElementById('loginAlert').innerHTML='';
+  document.getElementById('fbFooter').style.display='none';
+  document.getElementById('fbContent').innerHTML='<div class="fb-card"><div class="spinner-wrap"><div class="spinner"></div><p style="color:var(--muted);font-size:.9rem">Loading your feedback…</p></div></div>';
+  showPage('loginPage');
+}
+
+/* ── LOAD STUDENT DATA ─────────────────────────────────────── */
+function loadStudentData(sid){
+  callGAS('getStudentData', {studentID:sid}, function(res){
+    renderFeedback(res);
+  }, function(){
+    document.getElementById('fbContent').innerHTML='<div class="fb-card"><div style="padding:40px;text-align:center;color:var(--danger)">❌ Failed to load data. Please logout and try again.</div></div>';
+  });
+}
+
+/* ── CALL GAS API (fetch with CORS) ────────────────────────── */
+function callGAS(action, params, onSuccess, onError){
+  // Build URL: GAS_URL?action=xxx&param1=val1&...
+  var url = GAS_URL + '?action=' + encodeURIComponent(action);
+  Object.keys(params).forEach(function(k){
+    url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+  });
+
+  fetch(url, {redirect:'follow'})
+    .then(function(r){return r.json()})
+    .then(function(data){onSuccess(data)})
+    .catch(function(err){console.error('GAS error:',err);onError(err)});
+}
+
+/* ── PDF DOWNLOAD ──────────────────────────────────────────── */
+function downloadPDF(){
+  var now=new Date();
+  var dateStr=now.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var timeStr=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('pdfDate').textContent='Generated on: '+dateStr+' at '+timeStr;
+  document.getElementById('sb_date').textContent=dateStr+' at '+timeStr;
+  window.print();
+}
+
+/* ── LEVEL BADGE ───────────────────────────────────────────── */
+function levelBadge(pct){
+  if(pct>=90)return{cls:'lv-outstanding',txt:'⭐ Outstanding'};
+  if(pct>=80)return{cls:'lv-excellent',  txt:'🥇 Excellent'};
+  if(pct>=70)return{cls:'lv-verygood',   txt:'👍 Very Good'};
+  if(pct>=60)return{cls:'lv-good',       txt:'✅ Good'};
+  if(pct>=45)return{cls:'lv-satisfactory',txt:'📝 Satisfactory'};
+  return           {cls:'lv-improve',    txt:'⚠️ Needs Improvement'};
+}
+
+/* ── RENDER FEEDBACK ───────────────────────────────────────── */
+function renderFeedback(d){
+  if(!d.success){
+    document.getElementById('fbContent').innerHTML='<div class="fb-card"><div style="padding:40px;text-align:center;color:var(--danger)">❌ '+d.message+'</div></div>';
+    return;
+  }
+  var info=d.info, fb=d.feedback, perf=d.performance;
+
+  document.getElementById('sb_name').textContent=info.name;
+  document.getElementById('sb_sid').textContent=info.studentID;
+  document.getElementById('sb_dept').textContent=info.dept;
+  document.getElementById('sb_team').textContent=info.teamID;
+  document.getElementById('sb_venue').textContent=info.venue;
+  document.getElementById('sb_batch').textContent=info.batch;
+  document.getElementById('sb_perf').textContent=perf;
+  document.getElementById('sb_date').textContent=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+
+  document.getElementById('fbFooter').style.display='block';
+  document.getElementById('footerInfo').textContent='Batch: '+info.batch+'  ·  Venue: '+info.venue+'  ·  Team: '+info.teamID;
+
+  var html='';
+  html+='<div class="s-bar">';
+  html+='<div class="s-avatar">👤</div>';
+  html+='<div class="s-meta"><h2>'+info.name+'</h2><div class="s-chips">';
+  html+='<span class="s-chip">🪪 '+info.studentID+'</span>';
+  html+='<span class="s-chip">🏫 '+info.dept+'</span>';
+  html+='<span class="s-chip">👥 '+info.teamID+'</span>';
+  html+='<span class="s-chip">📍 '+info.venue+'</span>';
+  html+='<span class="s-chip">🕐 '+info.batch+'</span>';
+  html+='</div></div>';
+  html+='<div class="perf-box"><div class="perf-lbl">Overall Performance</div><div class="perf-val">'+perf+'</div></div>';
+  html+='</div>';
+
+  html+='<div class="sec-title">Category I — Seminar Content &amp; Presentation</div>';
+  html+='<div class="fb-card">';
+  html+='<div class="fb-card-head"><span class="hico">📘</span><h3>Category I — Faculty Feedback</h3></div>';
+  html+='<div class="fb-card-body">';
+  [{key:'problem',name:'Problem Statement / Theme',ico:'📋'},
+   {key:'methodology',name:'Methodology / Proposed Solution',ico:'⚙️'},
+   {key:'pictorial',name:'Pictorial / Scientific Explanation',ico:'🖼️'},
+   {key:'response',name:'Responding to Queries',ico:'💬'}
+  ].forEach(function(c){html+=catBlock(c.ico,c.name,fb[c.key])});
+  html+='</div></div>';
+
+  html+='<div class="sec-title">Category II — Personal &amp; Communication Skills</div>';
+  html+='<div class="fb-card">';
+  html+='<div class="fb-card-head"><span class="hico">📗</span><h3>Category II — Faculty Feedback</h3></div>';
+  html+='<div class="fb-card-body">';
+  [{key:'determination',name:'Determination / Confidence Level',ico:'💪'},
+   {key:'communication',name:'Communication',ico:'🗣️'}
+  ].forEach(function(c){html+=catBlock(c.ico,c.name,fb[c.key])});
+  html+='</div></div>';
+
+  document.getElementById('fbContent').innerHTML=html;
+}
+
+function catBlock(ico,name,f){
+  var lv=levelBadge(f.levelPct);
+  return '<div class="cat-sub">'
+    +'<div class="cat-top">'
+    +'<div class="cat-name"><span class="ico">'+ico+'</span>'+name+'</div>'
+    +'<span class="level-badge '+lv.cls+'">'+lv.txt+'</span>'
+    +'</div>'
+    +'<div class="fb-grid">'
+    +fbRow('comment','💬 Comment',f.comment)
+    +fbRow('problem','⚠️ Problem',f.problem)
+    +fbRow('suggest','✅ Suggestion',f.suggestion)
+    +fbRow('motivate','🌟 Motivation',f.motivation)
+    +'</div></div>';
+}
+function fbRow(type,label,text){
+  return '<div class="fb-row t-'+type+'"><span class="fb-tag t-'+type+'">'+label+'</span><div class="fb-text">'+text+'</div></div>';
+}
+
+showPage('loginPage');
+</script>
+</body>
+</html>
